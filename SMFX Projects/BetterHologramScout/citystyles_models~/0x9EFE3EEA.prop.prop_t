@@ -1,0 +1,243 @@
+key parent 0xA5D14EDA.prop
+string16 description "diplo citywalls large 02"
+bools BuildingLink0
+	false
+	true
+	true
+	true
+	true
+	true
+	false
+	false
+	false
+	false
+	true
+	false
+end
+bools BuildingLink1
+	true
+	false
+	true
+	false
+	false
+	false
+	false
+	true
+	false
+	false
+	false
+	true
+end
+bools BuildingLink10
+	true
+	false
+	false
+	false
+	false
+	false
+	true
+	false
+	true
+	false
+	false
+	false
+end
+bools BuildingLink11
+	false
+	true
+	false
+	false
+	false
+	false
+	false
+	false
+	false
+	false
+	false
+	false
+end
+bools BuildingLink2
+	true
+	true
+	false
+	false
+	false
+	false
+	true
+	false
+	false
+	false
+	false
+	false
+end
+bools BuildingLink3
+	true
+	false
+	false
+	false
+	true
+	true
+	false
+	false
+	false
+	true
+	false
+	false
+end
+bools BuildingLink4
+	true
+	false
+	false
+	true
+	false
+	false
+	false
+	false
+	false
+	true
+	false
+	false
+end
+bools BuildingLink5
+	true
+	false
+	false
+	true
+	false
+	false
+	false
+	false
+	true
+	false
+	false
+	false
+end
+bools BuildingLink6
+	false
+	false
+	true
+	false
+	false
+	false
+	false
+	false
+	false
+	false
+	true
+	false
+end
+bools BuildingLink7
+	false
+	true
+	false
+	false
+	false
+	false
+	false
+	false
+	false
+	false
+	false
+	false
+end
+bools BuildingLink8
+	false
+	false
+	false
+	false
+	false
+	true
+	false
+	false
+	false
+	false
+	true
+	false
+end
+bools BuildingLink9
+	false
+	false
+	false
+	true
+	true
+	false
+	false
+	false
+	false
+	false
+	false
+	false
+end
+vector3s Buildings
+	(18.2159996, 18.9109993, 0)
+	(22.6110001, -11.007, 0)
+	(-27.8239994, 5.3769999, 0)
+	(-15.8500004, 24.6310005, 0)
+	(-23.0629997, -18.5869999, 0)
+	(22.7269993, -32.7779999, 0)
+	(19.5259991, 39.8860016, 0)
+	(-22.941, -39.5719986, 0)
+	(-39.9389992, 26.5030003, 0)
+	(-0.7, -38.1619987, 0)
+	(37.5649986, 10.3660002, 0)
+end
+vector3 City_Hall (-2.8718605, 0.2169635, 0)
+vector3s Decorations
+	(-21.9249992, 42.723999, 0)
+	(-29.8759995, 44.9220009, 0)
+	(-30.9619999, -28.809, 0)
+	(20.9810009, -51.5359993, 0)
+	(11.1420002, -25.6380005, 0)
+	(12.7840004, 1.944, 0)
+	(-12.7349997, -25.1930008, 0)
+	(26.5760002, 5.4089999, 0)
+	(50.0919991, -7.816, 0)
+	(-39.1430016, -23.3470001, 0)
+	(5.2519999, 28.8549995, 0)
+	(1.184, 20.132, 0)
+	(35.1809998, 28.5100002, 0)
+	(45.4939995, 29.8519993, 0)
+	(51.651001, 13.6210003, 0)
+	(34.6969986, -4.0739999, 0)
+	(40.5489998, -11.8500004, 0)
+	(43.0760002, -21.0149994, 0)
+	(44.0439987, -30.1499996, 0)
+	(-43.4840012, -34.2260017, 0)
+	(-33.1829987, -8.8030005, 0)
+	(-27.6569996, 35.5940018, 0)
+	(7.5819998, -19.5540009, 0)
+	(8.5839996, -53.2859993, 0)
+	(-7.309, -53.5649986, 0)
+	(-48.7060013, 12.1540003, 0)
+	(-45.8250008, -11.6540003, 0)
+	(30.0380001, 47.5680008, 0)
+	(-8.0389996, -21.4610004, 0)
+	(35.6839981, -22.3400002, 0)
+end
+vector3 Freight_Gate (-40.0421982, 44.0966187, 0)
+vector3 Harvest_Gate (39.0237465, 43.4621811, -2.0203631)
+vector3 Main_Gate (-0.2452343, 59.2245445, 0)
+vector3s Plazas
+	(-0.782, 43.0690002, 0)
+end
+vector3 Sea_Gate (-0.597084, -61.6763763, 0)
+vector3s Side_Gates
+	(58.2919998, 1.424, 0)
+	(-58.6220016, 0.626, 0)
+end
+vector3s Turrets
+	(39.276001, -51.3230019, 2.6670001)
+	(-51.7560005, -22.7520008, 2.6800001)
+	(-54.0480003, 19.1819992, 2.6129999)
+	(53.3050003, 22.6280003, 2.7049999)
+end
+float cityHallDiasHeight 6.4000001
+keys modelEffect
+	city_walls_econ_large_02
+end
+key modelMeshLOD0 0xEC69E20D.rw4
+key modelMeshLOD1 0x34098546.rw4
+vector3 modelOffset (0, 0, 0)
+key modelPaintDecalTexture 0x17405073
+float radiusInner 0#51.2929993
+float radiusOuter 65.572998

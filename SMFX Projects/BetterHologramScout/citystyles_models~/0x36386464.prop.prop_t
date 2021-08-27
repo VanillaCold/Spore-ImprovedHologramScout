@@ -1,0 +1,245 @@
+key parent 0xA5D14EDA.prop
+string16 description "shrine citywalls large"
+bools BuildingLink0
+	false
+	true
+	true
+	false
+	true
+	true
+	false
+	false
+	false
+	false
+	false
+	false
+end
+bools BuildingLink1
+	true
+	false
+	false
+	true
+	false
+	false
+	true
+	false
+	false
+	false
+	false
+	true
+end
+bools BuildingLink10
+	false
+	false
+	false
+	false
+	false
+	true
+	false
+	false
+	false
+	false
+	false
+	false
+end
+bools BuildingLink11
+	false
+	true
+	false
+	true
+	false
+	false
+	false
+	false
+	false
+	false
+	false
+	false
+end
+bools BuildingLink2
+	true
+	false
+	false
+	false
+	true
+	true
+	false
+	false
+	true
+	false
+	false
+	false
+end
+bools BuildingLink3
+	false
+	true
+	false
+	false
+	true
+	false
+	false
+	false
+	false
+	true
+	false
+	true
+end
+bools BuildingLink4
+	true
+	false
+	true
+	true
+	false
+	false
+	false
+	false
+	false
+	false
+	false
+	false
+end
+bools BuildingLink5
+	true
+	false
+	true
+	false
+	false
+	false
+	false
+	true
+	false
+	false
+	true
+	false
+end
+bools BuildingLink6
+	false
+	true
+	false
+	false
+	false
+	false
+	false
+	false
+	false
+	false
+	false
+	false
+end
+bools BuildingLink7
+	false
+	false
+	false
+	false
+	false
+	true
+	false
+	false
+	false
+	false
+	false
+	false
+end
+bools BuildingLink8
+	false
+	false
+	true
+	false
+	false
+	false
+	false
+	false
+	false
+	true
+	false
+	false
+end
+bools BuildingLink9
+	false
+	false
+	false
+	true
+	false
+	false
+	false
+	false
+	true
+	false
+	false
+	false
+end
+vector3s Buildings
+	(20.0459995, 17.8659992, -1.471)
+	(-23.6159992, -15.6949997, -1.471)
+	(22.4430008, -14.2379999, -1.471)
+	(0.417, -21.8759995, -1.471)
+	(-19.3600006, 18.7360001, -1.471)
+	(14.698, 38.5099983, -1.471)
+	(-13.3540001, 39.7319984, -1.471)
+	(-17.1609993, -38.2639999, -1.471)
+	(18.9020004, -36.9230003, -1.471)
+	(-40.0519981, 13.243, -1.471)
+	(40.5369987, 9.6739998, -1.471)
+end
+vector3 City_Hall (0.0807427, 1.1116199, 5)
+vector3s Decorations
+	(30.2089996, -27.1949997, 0)
+	(-43.6580009, -13.5900002, 0)
+	(-15.3809996, -51.7019997, 0)
+	(12.3190002, -49.7910004, 0)
+	(-30.4029999, -37.2649994, 0)
+	(41.7949982, -4.0479999, 0)
+	(26.8659992, -1.376, 0)
+	(28.9360008, 45.1800003, 0)
+	(-22.7119999, 53.9449997, 0)
+	(-12.3610001, -25.8430004, 0)
+	(17.3390007, -2.1530001, 0)
+	(28.2259998, 29.6790009, 0)
+	(-48.5519981, -30.9169998, 0)
+	(-51.4679985, 14.5579996, 0)
+	(44.7400017, 29.6580009, 0)
+	(-27.3040009, 32.8470001, 0)
+	(53.3600006, 9.658, 0)
+	(-27.5610008, 46.7820015, 0)
+	(38.7280006, 25.8549995, 0)
+	(-33.8149986, -7.698, 0)
+	(42.3429985, -11.5649996, 0)
+	(-39.2849998, -40.0139999, 0)
+	(37.3839989, -27.5830002, 0)
+	(0.99, -42.8310013, 0)
+	(-24.809, 5.2870002, 0)
+	(40.8079987, -19.8479996, 0)
+	(-37.3779984, -27.6590004, 0)
+	(-41.2089996, -21.1089993, 0)
+	(51.6389999, -10.6689997, 0)
+	(30.8659992, -43.1290016, 0)
+end
+vector3 Freight_Gate (-40.5085869, 41.3483047, 0)
+vector3 Harvest_Gate (40.5594368, 40.9483147, -2.0203631)
+vector3 Main_Gate (-0.1953606, 57.6612053, 0)
+vector3s Plazas
+	(-0.294, 27.2119999, -1.471)
+end
+vector3 Sea_Gate (-0.34785, -57.9625282, 0)
+vector3s Side_Gates
+	(58.2980003, 0.35, 0)
+	(-56.7060013, 0.702, 0)
+end
+vector3s Turrets
+	(20.6930008, -51.8969994, 1.316)
+	(-49.5530014, 25.1410007, 2.9760001)
+	(56.0089989, 17.7189999, 1.428)
+	(-16.5270004, 55.7350006, 0.863)
+	(-24.4820004, -49.1920013, 1.49)
+	(52.0779991, -21.7520008, 1.438)
+end
+float cityHallDiasHeight 4.5999999
+keys modelEffect
+	city_walls_religious_large_01
+end
+key modelMeshLOD0 0x36386464.rw4
+key modelMeshLOD1 0x3DE682CD.rw4
+vector3 modelOffset (0, 0, 0)
+key modelPaintDecalTexture 0xDC7CF213
+float radiusInner 0#51.2929993
+float radiusOuter 65.572998
