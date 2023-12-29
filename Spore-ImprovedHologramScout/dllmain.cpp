@@ -17,6 +17,7 @@ void Initialize()
 	//  - Add new space tools
 	//  - Change materials
 	CheatManager.AddCheat("SpawnAvatar", new SpawnAvatarCheat());
+
 	App::AddUpdateFunction(new HologramScoutMod());
 }
 
@@ -27,8 +28,17 @@ void Dispose()
 
 member_detour(SetRenderType__detour, App::cViewer, void(int, bool)) {
 	void detoured(int renderType, bool arg2) {
-		if (renderType == 15 && Simulator::IsSpaceGame() && HologramScoutMod::Get()->isSpecial == 1) renderType = 0;
+		if (renderType == 15 && Simulator::IsSpaceGame() && HologramScoutMod::Get()->isSpecial == 1) renderType = HologramScoutMod::RenderToUse;
 		original_function(this, renderType, arg2);
+	}
+};
+
+member_detour(CreatureBaseDetour, Simulator::cCreatureBase, void(int, const Vector3&, const Vector3&, float, float))
+{
+	void detoured(int speedState, const Vector3 & dstPos, const Vector3 & arg_8, float goalStopDistance = 1.0f, float acceptableStopDistance = 2.0f)
+	{
+		speedState = 2;
+		original_function(this, speedState, dstPos, arg_8, goalStopDistance, acceptableStopDistance);
 	}
 };
 
@@ -37,7 +47,7 @@ virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStra
 	bool detoured(cSpaceToolData * pTool)
 	{
 		auto captain = GetPlayerEmpire()->mCaptainKey;
-		GetPlayerEmpire()->mCaptainKey = GetPlayerEmpire()->GetSpeciesProfile()->field_504;
+		GetPlayerEmpire()->mCaptainKey = GetPlayerEmpire()->GetSpeciesProfile()->mSpeciesKey;
 		bool result = original_function(this, pTool);
 		cCreatureAnimalPtr avatar = GameNounManager.GetAvatar();
 		
@@ -45,9 +55,32 @@ virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStra
 		if (App::Property::GetBool(pTool->mpPropList.get(), id("hologramScoutIsImproved"), isSpecial) && avatar)
 		{
 			HologramScoutMod::Get()->isSpecial = 1;
-			avatar->SetScale(1);
+			avatar->SetScale(1.5f);
 		}
-		GetPlayerEmpire()->mCaptainKey = captain;
+		//GetPlayerEmpire()->mCaptainKey = captain;
+
+		if (avatar)
+		{
+			avatar->mStandardSpeed = 10;
+			avatar->mTurnRate = 10;
+			avatar->mDesiredSpeed = 10;
+			avatar->GetModel()->GetModelWorld()->SetLightingWorld(Simulator::GetPlayerUFO()->GetModel()->GetModelWorld()->GetLightingWorld(0),0,1);
+			//avatar->field_101C = 0;
+			//avatar->field_166C = 0;
+			//avatar->GetModel()->field_5C = 0;
+
+			if (avatar->mGeneralFlags |= 0x200)
+			{
+				avatar->mGeneralFlags -= 0x200;
+			}
+
+			avatar->mFlags = 512;
+			avatar->mbIsGhost = 0;
+			avatar->mbIsTangible = 0;
+			avatar->mbKeepPinnedToPlanet = 0;
+			avatar->mbEnabled = 1;
+			avatar->mCurrentLoudness = 0;
+		}
 		return result;
 	}
 };
@@ -61,7 +94,7 @@ virtual_detour(Chocice75_ImprovedHologramScout_UpdateDetour, cGetOutOfUFOToolStr
 		App::Property::GetBool(pTool->mpPropList.get(), id("hologramScoutIsImproved"), isSpecial);
 
 		int tScore = 0;
-		if (SpacePlayerData::Get()->mCurrentContext == SpaceContext::kSpaceContextPlanet) { tScore = TerraformingManager.GetTScore(Simulator::GetActivePlanetRecord()); }//TerraformingManager.CalculateTScore(GetActivePlanetRecord()->mAtmosphereScore, GetActivePlanetRecord()->mTemperatureScore); }
+		if (SpacePlayerData::Get()->mCurrentContext == SpaceContext::Planet) { tScore = TerraformingManager.GetTScore(Simulator::GetActivePlanetRecord()); }//TerraformingManager.CalculateTScore(GetActivePlanetRecord()->mAtmosphereScore, GetActivePlanetRecord()->mTemperatureScore); }
 		else tScore = 1;
 
 		if (isSpecial == 1 && tScore <= 0)
@@ -82,6 +115,7 @@ void AttachDetours()
 	Chocice75_ImprovedHologramScout_OnUseDetour::attach(GetAddress(cGetOutOfUFOToolStrategy, OnSelect));
 	SetRenderType__detour::attach(GetAddress(App::cViewer, SetRenderType));
 	Chocice75_ImprovedHologramScout_UpdateDetour::attach(GetAddress(cGetOutOfUFOToolStrategy, Update));
+	CreatureBaseDetour::attach(GetAddress(Simulator::cCreatureBase, WalkTo));
 	// Call the attach() method on any detours you want to add
 	// For example: cViewer_SetRenderType_detour::attach(GetAddress(cViewer, SetRenderType));
 }

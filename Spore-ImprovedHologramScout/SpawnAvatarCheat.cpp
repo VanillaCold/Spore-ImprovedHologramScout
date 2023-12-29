@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SpawnAvatarCheat.h"
+#include "HologramScoutMod.h"
 
 SpawnAvatarCheat::SpawnAvatarCheat()
 {
@@ -13,7 +14,12 @@ SpawnAvatarCheat::~SpawnAvatarCheat()
 
 void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 {
+	auto a = line.GetArguments(1);
+	byte b = mpFormatParser->ParseUInt(a[0]);
 
+	HologramScoutMod::RenderToUse = b;
+
+	return;
 	if (line.HasFlag("test"))
 	{
 		for (auto creature : Simulator::GetData<Simulator::cCreatureAnimal>())
@@ -34,7 +40,7 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 			SporeDebugPrint("%b, %b, %b, %b", city->field_A4, city->field_A5, city->field_A7, city->field_20);
 			city->GetModel()->mCollisionMode = Graphics::CollisionMode::BoundingBox;
 			city->mBoundingRadius = 0;
-			city->GetModel()->GetModelWorld()->UpdateModel(city->GetModel());
+			city->GetModel()->GetModelWorld()->UpdatePickMesh(city->GetModel());
 			city->mpCity->SetHasModelChanged(1);
 			city->SetHasModelChanged(1);
 

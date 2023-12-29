@@ -12,6 +12,7 @@ class HologramScoutMod
 protected:
 	static HologramScoutMod* sInstance;
 public:
+	static byte RenderToUse;
 	static const uint32_t TYPE = id("HologramScoutMod");
 	
 	bool isSpecial = 0;
