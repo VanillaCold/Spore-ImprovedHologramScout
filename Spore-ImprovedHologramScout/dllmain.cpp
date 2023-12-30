@@ -5,6 +5,7 @@
 #include <Spore\GameModes.h>
 #include "HologramScoutMod.h"
 #include <Spore\Simulator\SubSystem\TerraformingManager.h>
+#include <Spore/Editors/BakeManager.h>
 using namespace Simulator;
 
 void Initialize()
@@ -46,42 +47,60 @@ virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStra
 {
 	bool detoured(cSpaceToolData * pTool)
 	{
-		auto captain = GetPlayerEmpire()->mCaptainKey;
-		GetPlayerEmpire()->mCaptainKey = GetPlayerEmpire()->GetSpeciesProfile()->mSpeciesKey;
-		bool result = original_function(this, pTool);
-		cCreatureAnimalPtr avatar = GameNounManager.GetAvatar();
-		
-		bool isSpecial;
-		if (App::Property::GetBool(pTool->mpPropList.get(), id("hologramScoutIsImproved"), isSpecial) && avatar)
+		if (Simulator::GetPlayerEmpire() && GetPlayerEmpire()->GetSpeciesProfile() && GetPlayerEmpire()->GetSpeciesProfile()->mSpeciesKey != ResourceKey(0,0,0))
 		{
-			HologramScoutMod::Get()->isSpecial = 1;
-			avatar->SetScale(1.5f);
-		}
-		//GetPlayerEmpire()->mCaptainKey = captain;
+			auto captain = GetPlayerEmpire()->mCaptainKey;
 
-		if (avatar)
-		{
-			avatar->mStandardSpeed = 10;
-			avatar->mTurnRate = 10;
-			avatar->mDesiredSpeed = 10;
-			avatar->GetModel()->GetModelWorld()->SetLightingWorld(Simulator::GetPlayerUFO()->GetModel()->GetModelWorld()->GetLightingWorld(0),0,1);
-			//avatar->field_101C = 0;
-			//avatar->field_166C = 0;
-			//avatar->GetModel()->field_5C = 0;
+			auto species = GetPlayerEmpire()->GetSpeciesProfile();
 
-			if (avatar->mGeneralFlags |= 0x200)
+			//ModAPI::Log("%x!%x.%x", species.groupID, species.instanceID, species.typeID);
+
+			GetPlayerEmpire()->mCaptainKey = ResourceKey(0x0,0x0,0x0);
+
+			bool result = original_function(this, pTool);
+
+			GetPlayerEmpire()->mCaptainKey = captain;
+			
+			//cHerd* a = (cHerd*)Simulator::cGameNounManager::Get();
+			//a = a->Simulator::cHerd::Create(Vector3(0, 0, 0), species, 0, true, 0, false);
+
+			GetPlayerEmpire()->SetSpeciesProfile(species);
+
+			//GetPlayerEmpire()->mCaptainKey = captain;
+			cCreatureAnimalPtr avatar = GameNounManager.GetAvatar();
+
+			bool isSpecial;
+			if (App::Property::GetBool(pTool->mpPropList.get(), id("hologramScoutIsImproved"), isSpecial) && avatar)
 			{
-				avatar->mGeneralFlags -= 0x200;
+				HologramScoutMod::Get()->isSpecial = 1;
+				avatar->SetScale(1.5f);
 			}
 
-			avatar->mFlags = 512;
-			avatar->mbIsGhost = 0;
-			avatar->mbIsTangible = 0;
-			avatar->mbKeepPinnedToPlanet = 0;
-			avatar->mbEnabled = 1;
-			avatar->mCurrentLoudness = 0;
+			if (avatar)
+			{
+				avatar->mStandardSpeed = 10;
+				avatar->mTurnRate = 10;
+				avatar->mDesiredSpeed = 10;
+				avatar->GetModel()->GetModelWorld()->SetLightingWorld(Simulator::GetPlayerUFO()->GetModel()->GetModelWorld()->GetLightingWorld(0), 0, 1);
+				//avatar->field_101C = 0;
+				//avatar->field_166C = 0;
+				//avatar->GetModel()->field_5C = 0;
+
+				if (avatar->mGeneralFlags |= 0x200)
+				{
+					avatar->mGeneralFlags -= 0x200;
+				}
+
+				avatar->mFlags = 512;
+				avatar->mbIsGhost = 0;
+				avatar->mbIsTangible = 0;
+				avatar->mbKeepPinnedToPlanet = 0;
+				avatar->mbEnabled = 1;
+				avatar->mCurrentLoudness = 0;
+			}
+			return result;
 		}
-		return result;
+		return false;
 	}
 };
 
