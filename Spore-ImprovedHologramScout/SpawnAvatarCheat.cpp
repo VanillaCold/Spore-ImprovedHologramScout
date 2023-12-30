@@ -32,7 +32,7 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 
 		for (auto city : Simulator::GetData<Simulator::cCityWalls>())
 		{
-			city->field_25C = 0;
+			//city->field_25C = 0;
 			city->mWallSize = 0;
 			city->GetModel()->mDefaultBBox.upper = Vector3(0,0,0);
 			city->GetModel()->mDefaultBBox.lower = Vector3(0, 0, 0);

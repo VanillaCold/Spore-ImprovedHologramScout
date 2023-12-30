@@ -38,7 +38,10 @@ member_detour(CreatureBaseDetour, Simulator::cCreatureBase, void(int, const Vect
 {
 	void detoured(int speedState, const Vector3 & dstPos, const Vector3 & arg_8, float goalStopDistance = 1.0f, float acceptableStopDistance = 2.0f)
 	{
-		speedState = 2;
+		if (this == (cCreatureBase*)GameNounManager.mpAvatar.get() && Simulator::IsSpaceGame() && HologramScoutMod::Get()->isSpecial)
+		{
+			speedState = 2;
+		}
 		original_function(this, speedState, dstPos, arg_8, goalStopDistance, acceptableStopDistance);
 	}
 };
@@ -60,24 +63,19 @@ virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStra
 			bool result = original_function(this, pTool);
 
 			GetPlayerEmpire()->mCaptainKey = captain;
-			
-			//cHerd* a = (cHerd*)Simulator::cGameNounManager::Get();
-			//a = a->Simulator::cHerd::Create(Vector3(0, 0, 0), species, 0, true, 0, false);
 
 			GetPlayerEmpire()->SetSpeciesProfile(species);
-
 			//GetPlayerEmpire()->mCaptainKey = captain;
 			cCreatureAnimalPtr avatar = GameNounManager.GetAvatar();
 
-			bool isSpecial;
-			if (App::Property::GetBool(pTool->mpPropList.get(), id("hologramScoutIsImproved"), isSpecial) && avatar)
+			bool isSpecial = false;
+			if (App::Property::GetBool(pTool->mpPropList.get(), id("hologramScoutIsImproved"), isSpecial) && avatar && isSpecial)
 			{
 				HologramScoutMod::Get()->isSpecial = 1;
 				avatar->SetScale(1.5f);
-			}
 
-			if (avatar)
-			{
+				//GameNounManager.CreateNest(avatar->mPosition, avatar->mHerd.get());
+
 				avatar->mStandardSpeed = 10;
 				avatar->mTurnRate = 10;
 				avatar->mDesiredSpeed = 10;
