@@ -71,18 +71,20 @@ virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStra
 			bool isSpecial = false;
 			if (App::Property::GetBool(pTool->mpPropList.get(), id("hologramScoutIsImproved"), isSpecial) && avatar && isSpecial)
 			{
+
+				cCreatureAnimal* animal = cCreatureAnimal::Create(avatar->mPosition, SpeciesManager.GetSpeciesProfile(captain),1,avatar->mHerd.get(),true);
+
+				cCreatureAnimal* animal2 = cCreatureAnimal::Create(avatar->mPosition, avatar->mpSpeciesProfile, 1, avatar->mHerd.get(), true);
+
+				GameNounManager.SetAvatar(animal);
+				animal2->SetScale(0.00000000001);
+				avatar->SetScale(0.00000000001);
+
+				avatar = animal;
+
 				HologramScoutMod::Get()->isSpecial = 1;
 				avatar->SetScale(1.5f);
-
-				//GameNounManager.CreateNest(avatar->mPosition, avatar->mHerd.get());
-
-				avatar->mStandardSpeed = 10;
-				avatar->mTurnRate = 10;
-				avatar->mDesiredSpeed = 10;
 				avatar->GetModel()->GetModelWorld()->SetLightingWorld(Simulator::GetPlayerUFO()->GetModel()->GetModelWorld()->GetLightingWorld(0), 0, 1);
-				//avatar->field_101C = 0;
-				//avatar->field_166C = 0;
-				//avatar->GetModel()->field_5C = 0;
 
 				if (avatar->mGeneralFlags |= 0x200)
 				{
