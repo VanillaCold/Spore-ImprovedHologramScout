@@ -24,22 +24,33 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 	//avatar->Teleport(avatar->mPosition + avatar->mPosition.Normalized(), avatar->mOrientation);
 
 	//avatar->mVelocity += 5* avatar->mPosition.Normalized();
-
-	Vector3 pos = avatar->mPosition;
-	float closestDist = 99999999999999;
-	for (auto combatant : Simulator::GetData<Simulator::cCreatureAnimal>())
+	if (line.HasFlag("flags"))
 	{
-		float dist = Math::distance(combatant->ToSpatialObject()->GetPosition(), pos);
-		if (dist < closestDist && combatant != avatar)
-		{
-			closestDist = dist;
-			avatar->mpCombatantTarget = combatant.get();
-			avatar->mpTarget = combatant.get();
-		}
+		SporeDebugPrint("%x", avatar->mFlags);
+		return;
 	}
 
-	CALL(Address(0x00c1e5c0), int, Args(Simulator::cCreatureBase*, int, Anim::AnimIndex), Args( avatar, 6, 0));
-
+	if (line.HasFlag("attk"))
+	{
+		Vector3 pos = avatar->mPosition;
+		float closestDist = 99999999999999;
+		for (auto combatant : Simulator::GetData<Simulator::cCreatureAnimal>())
+		{
+			float dist = Math::distance(combatant->ToSpatialObject()->GetPosition(), pos);
+			if (dist < closestDist && combatant != avatar && dist != 0.0)
+			{
+				closestDist = dist;
+				avatar->mpCombatantTarget = combatant.get();
+				avatar->mpTarget = combatant.get();
+			}
+		}
+		SporeDebugPrint("%f", closestDist);
+		CALL(Address(0x00c1e5c0), int, Args(Simulator::cCreatureBase*, int, Anim::AnimIndex), Args(avatar, 6, 0));
+	}
+	else
+	{
+		CALL(Address(0x00c18ca0), int, Args(Simulator::cCreatureBase*, int), Args(avatar, 2));
+	}
 	//auto a = line.GetArguments(1);
 	//byte b = mpFormatParser->ParseUInt(a[0]);
 

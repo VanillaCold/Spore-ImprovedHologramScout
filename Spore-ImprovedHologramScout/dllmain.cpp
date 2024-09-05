@@ -52,14 +52,19 @@ virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStra
 	{
 		if (Simulator::GetPlayerEmpire() && GetPlayerEmpire()->GetSpeciesProfile() && GetPlayerEmpire()->GetSpeciesProfile()->mSpeciesKey != ResourceKey(0,0,0))
 		{
-			auto captain = GetPlayerEmpire()->mCaptainKey;
 
+			bool isSpecial = false;
+			App::Property::GetBool(pTool->mpPropList.get(), id("hologramScoutIsImproved"), isSpecial);
+
+
+			auto captain = GetPlayerEmpire()->mCaptainKey;
 			auto species = GetPlayerEmpire()->GetSpeciesProfile();
 
 			//ModAPI::Log("%x!%x.%x", species.groupID, species.instanceID, species.typeID);
-
-			GetPlayerEmpire()->mCaptainKey = ResourceKey(0x0,0x0,0x0);
-
+			if (!isSpecial)
+			{
+				GetPlayerEmpire()->mCaptainKey = ResourceKey(0x0, 0x0, 0x0);
+			}
 			bool result = original_function(this, pTool);
 
 			GetPlayerEmpire()->mCaptainKey = captain;
@@ -68,19 +73,15 @@ virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStra
 			//GetPlayerEmpire()->mCaptainKey = captain;
 			cCreatureAnimalPtr avatar = GameNounManager.GetAvatar();
 
-			bool isSpecial = false;
-			if (App::Property::GetBool(pTool->mpPropList.get(), id("hologramScoutIsImproved"), isSpecial) && avatar && isSpecial)
+			if (result && avatar && isSpecial)
 			{
 
-				cCreatureAnimal* animal = cCreatureAnimal::Create(avatar->mPosition, SpeciesManager.GetSpeciesProfile(captain),1,avatar->mHerd.get(),true);
+				//cCreatureAnimal* animal = cCreatureAnimal::Create(avatar->mPosition, SpeciesManager.GetSpeciesProfile(captain),1,avatar->mHerd.get(),true);
 
 				cCreatureAnimal* animal2 = cCreatureAnimal::Create(avatar->mPosition, avatar->mpSpeciesProfile, 1, avatar->mHerd.get(), true);
 
-				GameNounManager.SetAvatar(animal);
+				GameNounManager.SetAvatar(avatar.get());
 				animal2->SetScale(0.00000000001);
-				avatar->SetScale(0.00000000001);
-
-				avatar = animal;
 
 				HologramScoutMod::Get()->isSpecial = 1;
 				avatar->SetScale(1.5f);
@@ -90,12 +91,14 @@ virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStra
 				{
 					avatar->mGeneralFlags -= 0x200;
 				}
-				avatar->mFlags = 512;
+				//avatar->mFlags = 0x220;
 				avatar->mbIsGhost = 0;
 				avatar->mbIsTangible = 0;
 				avatar->mbKeepPinnedToPlanet = 0;
 				avatar->mbEnabled = 1;
 				avatar->mCurrentLoudness = 0;
+				avatar->mbFixed = 0;
+				avatar->mbSupported = false;
 			}
 			return result;
 		}

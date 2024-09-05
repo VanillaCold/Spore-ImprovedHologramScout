@@ -53,12 +53,15 @@ void HologramScoutMod::Update()
 		{
 			avatar->mGeneralFlags -= 0x200;
 		}*/
-		
-		//avatar->mFlags = 512;
+
+		//avatar->mFlags = 0x220;
 		avatar->mbIsGhost = 0;
 		avatar->mbIsTangible = 0;
 		avatar->mbKeepPinnedToPlanet = 0;
 		avatar->mbEnabled = 1;
+		avatar->mbFixed = 0;
+		avatar->mbIsInvalid = 0;
+		avatar->mbSelfPowered = true;
 		avatar->mCurrentLoudness = 0;
 		//object_cast<Simulator::cCombatant>(avatar)->field_80 = 0;
 	}
