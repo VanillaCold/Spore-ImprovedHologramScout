@@ -90,7 +90,6 @@ virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStra
 				{
 					avatar->mGeneralFlags -= 0x200;
 				}
-
 				avatar->mFlags = 512;
 				avatar->mbIsGhost = 0;
 				avatar->mbIsTangible = 0;
@@ -104,12 +103,14 @@ virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStra
 	}
 };
 
-virtual_detour(Chocice75_ImprovedHologramScout_UpdateDetour, cGetOutOfUFOToolStrategy, cToolStrategy, bool(cSpaceToolData*, bool , char16_t*))
+virtual_detour(Chocice75_ImprovedHologramScout_UpdateDetour, cGetOutOfUFOToolStrategy, cToolStrategy, bool(cSpaceToolData*, bool , const char16_t**))
 {
-	bool detoured(cSpaceToolData * pTool, bool showErrors, char16_t* ppFailText = nullptr)
+	bool detoured(cSpaceToolData * pTool, bool showErrors, const char16_t** ppFailText = nullptr)
 	{
 		bool result = original_function(this, pTool, showErrors, ppFailText);
 		bool isSpecial;
+		
+		
 		App::Property::GetBool(pTool->mpPropList.get(), id("hologramScoutIsImproved"), isSpecial);
 
 		int tScore = 0;
@@ -118,7 +119,7 @@ virtual_detour(Chocice75_ImprovedHologramScout_UpdateDetour, cGetOutOfUFOToolStr
 
 		if (isSpecial == 1 && tScore <= 0)
 		{
-			ppFailText = u"Cannot be used on T0 planets.";
+			//ppFailText = new const char16_t*(u"Cannot be used on T0 planets.");
 			showErrors = true;
 			return false;
 		} 
@@ -129,12 +130,26 @@ virtual_detour(Chocice75_ImprovedHologramScout_UpdateDetour, cGetOutOfUFOToolStr
 	}
 };
 
+member_detour(stupidTestDetour, Simulator::cCreatureBase, int(int))
+{
+	//Address(FUN_00c1e5c0)
+	int detoured(int unk)
+	{
+		SporeDebugPrint("%i", unk);
+		int ret = original_function(this, unk);
+		SporeDebugPrint("%i", ret);
+		return ret;
+	}
+};
+
 void AttachDetours()
 {
 	Chocice75_ImprovedHologramScout_OnUseDetour::attach(GetAddress(cGetOutOfUFOToolStrategy, OnSelect));
 	SetRenderType__detour::attach(GetAddress(App::cViewer, SetRenderType));
 	Chocice75_ImprovedHologramScout_UpdateDetour::attach(GetAddress(cGetOutOfUFOToolStrategy, Update));
 	CreatureBaseDetour::attach(GetAddress(Simulator::cCreatureBase, WalkTo));
+
+	stupidTestDetour::attach(Address(0x00c18ca0));
 	// Call the attach() method on any detours you want to add
 	// For example: cViewer_SetRenderType_detour::attach(GetAddress(cViewer, SetRenderType));
 }

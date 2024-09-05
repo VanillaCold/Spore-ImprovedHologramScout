@@ -14,10 +14,36 @@ SpawnAvatarCheat::~SpawnAvatarCheat()
 
 void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 {
-	auto a = line.GetArguments(1);
-	byte b = mpFormatParser->ParseUInt(a[0]);
 
-	HologramScoutMod::RenderToUse = b;
+	auto avatar = GameNounManager.GetAvatar();
+	auto creaturebase = object_cast<Simulator::cCreatureBase>(avatar);
+
+	avatar->mbKeepPinnedToPlanet = 0;
+	//avatar->mbTeleport = 1;
+
+	//avatar->Teleport(avatar->mPosition + avatar->mPosition.Normalized(), avatar->mOrientation);
+
+	//avatar->mVelocity += 5* avatar->mPosition.Normalized();
+
+	Vector3 pos = avatar->mPosition;
+	float closestDist = 99999999999999;
+	for (auto combatant : Simulator::GetData<Simulator::cCreatureAnimal>())
+	{
+		float dist = Math::distance(combatant->ToSpatialObject()->GetPosition(), pos);
+		if (dist < closestDist && combatant != avatar)
+		{
+			closestDist = dist;
+			avatar->mpCombatantTarget = combatant.get();
+			avatar->mpTarget = combatant.get();
+		}
+	}
+
+	CALL(Address(0x00c1e5c0), int, Args(Simulator::cCreatureBase*, int, Anim::AnimIndex), Args( avatar, 6, 0));
+
+	//auto a = line.GetArguments(1);
+	//byte b = mpFormatParser->ParseUInt(a[0]);
+
+	//HologramScoutMod::RenderToUse = b;
 
 	return;
 	if (line.HasFlag("test"))
@@ -62,7 +88,7 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 		
 		avatar->mbKeepPinnedToPlanet = 0;
 		avatar->mbTeleport = 1;
-		avatar->mVelocity += (50, 0, 0);
+		avatar->mVelocity += 5 * avatar->mPosition.Normalized();
 		
 		//avatar->SetVelocity(vel);
 		
