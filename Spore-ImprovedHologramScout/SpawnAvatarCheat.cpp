@@ -44,8 +44,29 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 				avatar->mpTarget = combatant.get();
 			}
 		}
-		SporeDebugPrint("%f", closestDist);
-		CALL(Address(0x00c1e5c0), int, Args(Simulator::cCreatureBase*, int, Anim::AnimIndex), Args(avatar, 6, 0));
+
+		auto count = avatar->GetAbilitiesCount();
+		int index = 6;
+		for (int i = 0; i < count; i++)
+		{
+			auto ability = avatar->GetAbility(i);
+			if (ability->mCategory == 1)
+			{
+				index = i;
+				break;
+			}
+		}
+		size_t argCount;
+		auto args = line.GetArgumentsRange(&argCount, 0, 1);
+		if (argCount != 0)
+		{
+			index = mpFormatParser->ParseInt(args[0]);
+		}
+		auto ability = avatar->GetAbility(index);
+		SporeDebugPrint("%i, %ls, 0x%x", index,
+			ability->nName.GetText(), ability->mpPropList->GetResourceKey().instanceID );
+
+		CALL(Address(0x00c1e5c0), int, Args(Simulator::cCreatureBase*, int, Anim::AnimIndex), Args(avatar, index, 0));
 	}
 	else
 	{
