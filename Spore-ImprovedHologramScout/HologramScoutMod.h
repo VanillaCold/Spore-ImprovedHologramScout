@@ -15,9 +15,9 @@ public:
 	static byte RenderToUse;
 	static const uint32_t TYPE = id("HologramScoutMod");
 	
-	bool isSpecial = 0;
+	bool isSpecial;
+	bool wasActive;
 	GameInput input;
-	bool wasPreviosulyJumping = 0;
 	float boundingRadius;
 
 	HologramScoutMod();
@@ -27,6 +27,11 @@ public:
 
 	int AddRef() override;
 	int Release() override;
+
+	void OpenUI(bool showAbilities);
+
+	UILayoutPtr mpLayout;
+
 	static HologramScoutMod* Get();
 	void* Cast(uint32_t type) const override;
 };

@@ -34,18 +34,6 @@ member_detour(SetRenderType__detour, App::cViewer, void(int, bool)) {
 	}
 };
 
-member_detour(CreatureBaseDetour, Simulator::cCreatureBase, void(int, const Vector3&, const Vector3&, float, float))
-{
-	void detoured(int speedState, const Vector3 & dstPos, const Vector3 & arg_8, float goalStopDistance = 1.0f, float acceptableStopDistance = 2.0f)
-	{
-		if (this == (cCreatureBase*)GameNounManager.mpAvatar.get() && Simulator::IsSpaceGame() && HologramScoutMod::Get()->isSpecial)
-		{
-			speedState = 2;
-		}
-		original_function(this, speedState, dstPos, arg_8, goalStopDistance, acceptableStopDistance);
-	}
-};
-
 virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStrategy, cToolStrategy, bool(cSpaceToolData*))
 {
 	bool detoured(cSpaceToolData * pTool)
@@ -59,7 +47,7 @@ virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStra
 
 			auto captain = GetPlayerEmpire()->mCaptainKey;
 			auto species = GetPlayerEmpire()->GetSpeciesProfile();
-
+			HologramScoutMod::Get()->isSpecial = isSpecial;
 			//ModAPI::Log("%x!%x.%x", species.groupID, species.instanceID, species.typeID);
 			if (!isSpecial)
 			{
@@ -73,6 +61,8 @@ virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStra
 			//GetPlayerEmpire()->mCaptainKey = captain;
 			cCreatureAnimalPtr avatar = GameNounManager.GetAvatar();
 
+			HologramScoutMod::Get()->OpenUI(isSpecial);
+
 			if (result && avatar && isSpecial)
 			{
 
@@ -84,7 +74,8 @@ virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStra
 				animal2->SetScale(0.00000000001);
 
 				HologramScoutMod::Get()->isSpecial = 1;
-				avatar->SetScale(1.5f);
+				avatar->SetCurrentBrainLevel(5);
+				avatar->SetScale(0.8f);
 				avatar->GetModel()->GetModelWorld()->SetLightingWorld(Simulator::GetPlayerUFO()->GetModel()->GetModelWorld()->GetLightingWorld(0), 0, 1);
 
 				if (avatar->mGeneralFlags |= 0x200)
@@ -100,6 +91,16 @@ virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStra
 				avatar->mbFixed = 0;
 				avatar->mbSupported = false;
 			}
+
+			for (auto creature : Simulator::GetData<Simulator::cCreatureAnimal>())
+			{
+				if (creature != avatar && creature->mbEnabled)
+				{
+					creature->SetScale(creature->mScale * 0.25f);
+					creature->mScale /= 0.25f;
+				}
+			}
+
 			return result;
 		}
 		return false;
@@ -133,15 +134,18 @@ virtual_detour(Chocice75_ImprovedHologramScout_UpdateDetour, cGetOutOfUFOToolStr
 	}
 };
 
-member_detour(stupidTestDetour, Simulator::cCreatureBase, int(int))
+static_detour(HologramAudioDetour, void(uint32_t, Audio::AudioTrack, Vector3))
 {
-	//Address(FUN_00c1e5c0)
-	int detoured(int unk)
+	void detoured(uint32_t id, Audio::AudioTrack track, Vector3 pos)
 	{
-		SporeDebugPrint("%i", unk);
-		int ret = original_function(this, unk);
-		SporeDebugPrint("%i", ret);
-		return ret;
+		if (id == 0x73ecda8a && Simulator::IsSpaceGame() && !HologramScoutMod::Get()->isSpecial)
+		{
+			return original_function(id, track, pos);
+		}
+		else
+		{
+			return;
+		}
 	}
 };
 
@@ -150,9 +154,9 @@ void AttachDetours()
 	Chocice75_ImprovedHologramScout_OnUseDetour::attach(GetAddress(cGetOutOfUFOToolStrategy, OnSelect));
 	SetRenderType__detour::attach(GetAddress(App::cViewer, SetRenderType));
 	Chocice75_ImprovedHologramScout_UpdateDetour::attach(GetAddress(cGetOutOfUFOToolStrategy, Update));
-	CreatureBaseDetour::attach(GetAddress(Simulator::cCreatureBase, WalkTo));
+	//CreatureBaseDetour::attach(GetAddress(Simulator::cCreatureBase, WalkTo));
 
-	stupidTestDetour::attach(Address(0x00c18ca0));
+	HologramAudioDetour::attach(GetAddress(Audio,PlayProceduralAudio));
 	// Call the attach() method on any detours you want to add
 	// For example: cViewer_SetRenderType_detour::attach(GetAddress(cViewer, SetRenderType));
 }

@@ -4,6 +4,7 @@
 
 SpawnAvatarCheat::SpawnAvatarCheat()
 {
+	
 }
 
 
@@ -66,11 +67,13 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 		SporeDebugPrint("%i, %ls, 0x%x", index,
 			ability->nName.GetText(), ability->mpPropList->GetResourceKey().instanceID );
 
-		CALL(Address(0x00c1e5c0), int, Args(Simulator::cCreatureBase*, int, Anim::AnimIndex), Args(avatar, index, 0));
+		avatar->PlayAbility(index);
+		//CALL(Address(0x00c1e5c0), int, Args(Simulator::cCreatureBase*, int, Anim::AnimIndex), Args(avatar, index, 0));
 	}
 	else
 	{
-		CALL(Address(0x00c18ca0), int, Args(Simulator::cCreatureBase*, int), Args(avatar, 2));
+		avatar->DoJump(0);
+		//CALL(Address(0x00c18ca0), int, Args(Simulator::cCreatureBase*, int), Args(avatar, 50));
 	}
 	//auto a = line.GetArguments(1);
 	//byte b = mpFormatParser->ParseUInt(a[0]);
