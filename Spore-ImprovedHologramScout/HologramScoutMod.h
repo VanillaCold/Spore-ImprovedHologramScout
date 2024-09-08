@@ -11,6 +11,9 @@ class HologramScoutMod
 {
 protected:
 	static HologramScoutMod* sInstance;
+
+	bool mbPressedSpace;
+
 public:
 	static byte RenderToUse;
 	static const uint32_t TYPE = id("HologramScoutMod");
@@ -23,7 +26,13 @@ public:
 	HologramScoutMod();
 	~HologramScoutMod();
 
+
 	void Update() override;
+
+	void SelectCombatant(cCombatantPtr combatant);
+	void DeselectCombatant();
+
+	void GetPlayerInput(cCreatureBasePtr avatar);
 
 	int AddRef() override;
 	int Release() override;
@@ -31,6 +40,7 @@ public:
 	void OpenUI(bool showAbilities);
 
 	UILayoutPtr mpLayout;
+	cCombatantPtr mpHoveredCombatant;
 
 	static HologramScoutMod* Get();
 	void* Cast(uint32_t type) const override;

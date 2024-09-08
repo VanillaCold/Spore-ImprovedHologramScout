@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "HologramScoutMod.h"
+#include <Spore/Simulator/cCreatureGameData.h>
 
 HologramScoutMod* HologramScoutMod::sInstance;
 byte HologramScoutMod::RenderToUse;
@@ -12,6 +13,7 @@ HologramScoutMod::HologramScoutMod()
 
 	isSpecial = 0;
 	wasActive = 0;
+	mbPressedSpace = 0;
 }
 
 
@@ -39,8 +41,63 @@ void HologramScoutMod::Update()
 			}
 		}
 
+		//Selection code
+		Vector3 cameraPosition, mouseDir;
+		App::GetViewer()->GetCameraToMouse(cameraPosition, mouseDir);
+		auto viewDir = CameraManager.GetViewer()->GetViewTransform().GetRotation().Row(1);
+		vector<cSpatialObjectPtr> objects;
+		Vector3 intersection;
+
+		Graphics::FilterSettings filter;
+		filter.collisionMode = Graphics::CollisionMode::MeshCluster;
+
+		if (GameViewManager.RaycastAll(cameraPosition, cameraPosition + mouseDir * 1000.0f, objects, true))
+		{
+			cCombatantPtr comb;
+			for each (cSpatialObjectPtr obj in objects)
+			{
+				if (object_cast<Simulator::cCombatant>(obj))
+				{
+					comb = object_cast<Simulator::cCombatant>(obj);
+					break;
+				}
+			}
+
+			if (comb != nullptr)
+			{
+				if (PlanetModel.mpTerrain->Raycast(cameraPosition, comb->ToSpatialObject()->mPosition) == Vector3(0, 0, 0))
+				{
+					SporeDebugPrint("raycasted!");
+					if (mpHoveredCombatant != comb)
+					{
+						comb->ToSpatialObject()->SetIsRolledOver(true);
+						if (mpHoveredCombatant)
+						{
+							mpHoveredCombatant->ToSpatialObject()->SetIsRolledOver(false);
+						}
+						mpHoveredCombatant = comb;
+					}
+				}
+				else
+				{
+					comb = nullptr;
+					mpHoveredCombatant = nullptr;
+				}
+			}
+			else
+			{
+				if (mpHoveredCombatant != nullptr)
+				{
+					mpHoveredCombatant->ToSpatialObject()->SetIsRolledOver(false);
+				}
+			}
+		}
+
+		GetPlayerInput(avatar);
+			
 		if (isSpecial)
 		{
+			
 
 			//avatar->mFlags = 0x220;
 			avatar->mbIsGhost = 0;
@@ -52,6 +109,11 @@ void HologramScoutMod::Update()
 			avatar->mbSelfPowered = true;
 			avatar->mCurrentLoudness = 0;
 			//object_cast<Simulator::cCombatant>(avatar)->field_80 = 0;
+		}
+		else
+		{
+			object_cast<Simulator::cCombatant>(avatar)->field_80 = true;
+			
 		}
 	}
 	else
@@ -76,6 +138,55 @@ void HologramScoutMod::Update()
 
 
 
+void HologramScoutMod::GetPlayerInput(cCreatureBasePtr avatar)
+{
+	if (GameInputManager.IsTriggered(0x00000007)) //Spacebar
+	{
+		if (!mbPressedSpace)
+		{
+			mbPressedSpace = 1;
+			if (avatar->mbSupported || CreatureGameData.mNumFlapsAllowed > 0)
+			{
+				if (avatar->mbSupported)
+				{
+					auto flight = avatar->GetAbility(avatar->GetAbilityIndexByType(18));
+					if (flight)
+					{
+						float gliding;
+						App::Property::GetFloat(flight->mpPropList.get(), 0x02CC974A, gliding);
+						CreatureGameData.mNumFlapsAllowed = round(gliding) * 2;
+					}
+				}
+				else
+				{
+					CreatureGameData.mNumFlapsAllowed -= 1;
+				}
+
+				avatar->DoJump(50 * (!isSpecial));
+			}
+			else
+			{
+				CreatureGameData.mNumFlapsAllowed = 0;
+			}
+		}
+	}
+	else
+	{
+		mbPressedSpace = false;
+	}
+
+
+	bool leftClick = GameInputManager.IsTriggered(0x00000016);
+	if (leftClick) //Left click
+	{
+		SporeDebugPrint("click!");
+		if (mpHoveredCombatant)
+		{
+			SelectCombatant(mpHoveredCombatant);
+		}
+	}
+}
+
 
 void HologramScoutMod::OpenUI(bool useAbilities)
 {
@@ -93,6 +204,7 @@ void HologramScoutMod::OpenUI(bool useAbilities)
 	{
 		mpLayout->FindWindowByID(id("CrtSpecialAbilities"))->SetVisible(false);
 		mpLayout->FindWindowByID(id("CrtBaseAbilities"))->SetVisible(false);
+		mpLayout->FindWindowByID(id("InfHealthDisplay"))->SetVisible(true);
 	}
 	auto avatar = GameNounManager.GetAvatar();
 	auto imageKey = ResourceKey(avatar->mSpeciesKey.instanceID, TypeIDs::png, avatar->mSpeciesKey.groupID);
@@ -114,6 +226,18 @@ void* HologramScoutMod::Cast(uint32_t type) const
 	CLASS_CAST(Object);
 	CLASS_CAST(HologramScoutMod);
 	return nullptr;
+}
+
+void HologramScoutMod::SelectCombatant(cCombatantPtr combatant)
+{
+	GameNounManager.GetAvatar()->mpCombatantTarget = combatant.get();
+	mpLayout->FindWindowByID(id("TargetCreatureUI"))->SetVisible(true);
+	SporeDebugPrint("Selected combatant!");
+}
+
+void HologramScoutMod::DeselectCombatant()
+{
+	mpLayout->FindWindowByID(id("TargetCreatureUI"))->SetVisible(false);
 }
 
 

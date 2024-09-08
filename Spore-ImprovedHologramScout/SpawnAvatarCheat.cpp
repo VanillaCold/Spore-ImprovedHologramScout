@@ -33,7 +33,7 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 
 	if (line.HasFlag("attk"))
 	{
-		Vector3 pos = avatar->mPosition;
+		/*Vector3 pos = avatar->mPosition;
 		float closestDist = 99999999999999;
 		for (auto combatant : Simulator::GetData<Simulator::cCreatureAnimal>())
 		{
@@ -44,7 +44,7 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 				avatar->mpCombatantTarget = combatant.get();
 				avatar->mpTarget = combatant.get();
 			}
-		}
+		}*/
 
 		auto count = avatar->GetAbilitiesCount();
 		int index = 6;
@@ -81,7 +81,7 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 	//HologramScoutMod::RenderToUse = b;
 
 	return;
-	if (line.HasFlag("test"))
+	/*if (line.HasFlag("test"))
 	{
 		for (auto creature : Simulator::GetData<Simulator::cCreatureAnimal>())
 		{
@@ -135,7 +135,7 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 		//SporeDebugPrint("Flags (model): %i, Flags (creature): %i, Speed state: %i, Unknown model bool: %b, Group model flags: %i, %i", avatar->mFlags, avatar->mGeneralFlags, avatar->mSpeedState, avatar->GetModel()->field_5C, avatar->GetModel()->mGroupFlags[0], avatar->GetModel()->mGroupFlags[1]);
 	}
 	// This method is called when your cheat is invoked.
-	// Put your cheat code here.
+	// Put your cheat code here.*/
 }
 
 void SpawnAvatarCheat::OnShopperAccept(const ResourceKey& selection)
