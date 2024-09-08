@@ -38,9 +38,12 @@ public:
 	int Release() override;
 
 	void OpenUI(bool showAbilities);
+	void UpdateUI();
+	void CloseUI();
 
 	UILayoutPtr mpLayout;
 	cCombatantPtr mpHoveredCombatant;
+	cCombatantPtr mpSelectedCombatant;
 
 	static HologramScoutMod* Get();
 	void* Cast(uint32_t type) const override;

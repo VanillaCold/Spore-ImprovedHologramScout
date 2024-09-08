@@ -53,6 +53,8 @@ virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStra
 			{
 				GetPlayerEmpire()->mCaptainKey = ResourceKey(0x0, 0x0, 0x0);
 			}
+			//animal = nullptr;
+
 			bool result = original_function(this, pTool);
 
 			GetPlayerEmpire()->mCaptainKey = captain;
@@ -62,6 +64,8 @@ virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStra
 			cCreatureAnimalPtr avatar = GameNounManager.GetAvatar();
 
 			HologramScoutMod::Get()->OpenUI(isSpecial);
+			avatar->SetCurrentBrainLevel(5);
+			avatar->mMaxHealthPoints = max(avatar->mHealthPoints, avatar->mMaxHealthPoints);
 
 			if (result && avatar && isSpecial)
 			{
@@ -70,11 +74,14 @@ virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStra
 
 				cCreatureAnimal* animal2 = cCreatureAnimal::Create(avatar->mPosition, avatar->mpSpeciesProfile, 1, avatar->mHerd.get(), true);
 
+				animal2->SetCurrentBrainLevel(5);
+				avatar->mMaxHealthPoints = max(avatar->mMaxHealthPoints, max(animal2->mHealthPoints, animal2->mMaxHealthPoints));
 				GameNounManager.SetAvatar(avatar.get());
 				animal2->SetScale(0.00000000001);
 
+				avatar->mHealthPoints = avatar->mMaxHealthPoints;
+
 				HologramScoutMod::Get()->isSpecial = 1;
-				avatar->SetCurrentBrainLevel(5);
 				avatar->SetScale(0.8f);
 				avatar->GetModel()->GetModelWorld()->SetLightingWorld(Simulator::GetPlayerUFO()->GetModel()->GetModelWorld()->GetLightingWorld(0), 0, 1);
 
@@ -96,6 +103,8 @@ virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStra
 			{
 				if (creature != avatar && creature->mbEnabled)
 				{
+					creature->mMaxHealthPoints = max(creature->mMaxHealthPoints, creature->mHealthPoints);
+					creature->mHealthPoints = max(creature->mMaxHealthPoints, creature->mHealthPoints);
 					creature->SetScale(creature->mScale * 0.25f);
 					creature->mScale /= 0.25f;
 				}
@@ -149,6 +158,35 @@ static_detour(HologramAudioDetour, void(uint32_t, Audio::AudioTrack, Vector3))
 	}
 };
 
+//This is needed to ensure that creatures in the space stage don't always deal 9999 damage like they do in vanilla. 
+virtual_detour(OverrideCreatureDamageDetour, Simulator::cCreatureBase, Simulator::cCombatant, int(float, uint32_t, int, const Vector3&, cCombatant*))
+{
+	int detoured(float damage, uint32_t attackerPoliticalID, int unk, const Vector3 & unkPos, cCombatant * pAttacker)
+	{
+		//Get the attacker, and verify it's the space-stage.
+		if (pAttacker && Simulator::IsSpaceGame())
+		{
+			//Cast the attacker to a creature.
+			auto creature = object_cast<Simulator::cCreatureBase>(pAttacker);
+			if (creature) //if it is one,
+			{
+				//Get the current ability index being used,
+				uint32_t attackIndex = creature->mCurrentAttackIdx;
+				//and get the ability from that.
+				auto ability = creature->GetAbility(attackIndex);
+				//If it's a valid ability,
+				if (ability)
+				{
+					//set the damage to ability->mDamage, so that it isn't overpowered.
+					damage = ability->mDamage;
+				}
+			}
+		}
+		SporeDebugPrint("Damage is %f, caused by political ID of 0x%x", damage, attackerPoliticalID);
+		return original_function(this, damage, attackerPoliticalID, unk, unkPos, pAttacker);
+	}
+};
+
 void AttachDetours()
 {
 	Chocice75_ImprovedHologramScout_OnUseDetour::attach(GetAddress(cGetOutOfUFOToolStrategy, OnSelect));
@@ -157,6 +195,7 @@ void AttachDetours()
 	//CreatureBaseDetour::attach(GetAddress(Simulator::cCreatureBase, WalkTo));
 
 	HologramAudioDetour::attach(GetAddress(Audio,PlayProceduralAudio));
+	OverrideCreatureDamageDetour::attach(Address(0x00bfcf10));
 	// Call the attach() method on any detours you want to add
 	// For example: cViewer_SetRenderType_detour::attach(GetAddress(cViewer, SetRenderType));
 }

@@ -7,6 +7,7 @@ city_walls_econ_large_03
 auto_citystyles_models~_ci_shrine_citywalls_large_02
 auto_citystyles_models~_ci_shrine_citywalls_large_seaport
 CreatureIcon
+TriggerConfigWalkAround
 auto_citystyles_models~_ci_castle_citywalls_large_03
 ci_castle_citywalls_large_03
 EnergyBar
@@ -16,6 +17,7 @@ ci_castle_citywalls_large
 auto_citystyles_models~_ci_diplo_citywalls_large
 auto_citystyles_models~_sg_grob_walls_seaport
 auto_citystyles_models~_ci_diplo_citywalls_large_03_seaport
+scripts1~	0x24a4f5a
 AbilityUI
 colony_walls
 auto_citystyles_models~_ci_castle_citywalls_large_03_seaport
@@ -28,6 +30,7 @@ CrtEnergyBar
 CrtBaseAbilities
 sg_grob_walls
 travel_panel_top~	0xaf3696d
+CrtLowHealth
 city_walls_religious_large_03
 auto_citystyles_models~_ci_diplo_citywalls_large_02_seaport
 city_walls_religious_large_02

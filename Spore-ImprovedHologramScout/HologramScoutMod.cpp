@@ -38,6 +38,7 @@ void HologramScoutMod::Update()
 			{
 				creature->SetScale(creature->mScale * 0.25f);
 				creature->mScale /= (0.25f);
+				creature->mMaxHealthPoints = max(creature->mHealthPoints, creature->mMaxHealthPoints);
 			}
 		}
 
@@ -68,6 +69,8 @@ void HologramScoutMod::Update()
 				if (PlanetModel.mpTerrain->Raycast(cameraPosition, comb->ToSpatialObject()->mPosition) == Vector3(0, 0, 0))
 				{
 					SporeDebugPrint("raycasted!");
+
+					SporeDebugPrint("%f, %f", comb->mHealthPoints, comb->mMaxHealthPoints);
 					if (mpHoveredCombatant != comb)
 					{
 						comb->ToSpatialObject()->SetIsRolledOver(true);
@@ -94,6 +97,7 @@ void HologramScoutMod::Update()
 		}
 
 		GetPlayerInput(avatar);
+		UpdateUI();
 			
 		if (isSpecial)
 		{
@@ -101,7 +105,7 @@ void HologramScoutMod::Update()
 
 			//avatar->mFlags = 0x220;
 			avatar->mbIsGhost = 0;
-			avatar->mbIsTangible = 0;
+			avatar->mbIsTangible = 1;
 			avatar->mbKeepPinnedToPlanet = 0;
 			avatar->mbEnabled = 1;
 			avatar->mbFixed = 0;
@@ -113,7 +117,6 @@ void HologramScoutMod::Update()
 		else
 		{
 			object_cast<Simulator::cCombatant>(avatar)->field_80 = true;
-			
 		}
 	}
 	else
@@ -123,6 +126,7 @@ void HologramScoutMod::Update()
 			for (auto creature : Simulator::GetData<Simulator::cCreatureAnimal>())
 			{
 				creature->SetScale(creature->mScale);
+				creature->mMaxHealthPoints = 1;
 			}
 		}
 		wasActive = 0;
@@ -131,6 +135,10 @@ void HologramScoutMod::Update()
 
 	if (!(Simulator::IsSpaceGame() && GameNounManager.GetAvatar()) && mpLayout)
 	{
+		if (Simulator::IsSpaceGame())
+		{
+			CloseUI();
+		}
 		mpLayout = nullptr;
 	}
 }
@@ -218,6 +226,39 @@ void HologramScoutMod::OpenUI(bool useAbilities)
 	WindowManager.GetMainWindow()->FindWindowByID(0x065E40F0)->GetParent()->SetVisible(false);
 }
 
+void HologramScoutMod::UpdateUI()
+{
+	//doing this so that we won't need to recursively search all windows repeatedly
+	auto statDisplay = mpLayout->FindWindowByID(id("StatDisplay"));
+	auto avatar = GameNounManager.GetAvatar();
+	if (!avatar || !statDisplay)
+	{
+		CloseUI();
+		return;
+	}
+
+	auto healthText = statDisplay->FindWindowByID(id("CrtHealthText"));
+	
+	string16 text;
+	text.sprintf(u"%i", int(avatar->mHealthPoints));
+
+	healthText->SetCaption(text.c_str());
+
+
+	float healthPercent = avatar->mHealthPoints / avatar->mMaxHealthPoints;
+	auto healthBar = statDisplay->FindWindowByID(id("CrtHealthBar"));
+	healthBar->SetArea(Math::Rectangle(0, 0, 68 * healthPercent, 13));
+	healthBar->SetFlag(UTFWin::WindowFlags::kWinFlagClip, true);
+	healthBar->GetParent()->SetFlag(UTFWin::WindowFlags::kWinFlagClip, true);
+
+}
+
+void HologramScoutMod::CloseUI()
+{
+	mpLayout = nullptr;
+	WindowManager.GetMainWindow()->FindWindowByID(0x065E40F0)->GetParent()->SetVisible(true);
+}
+
 
 
 // You can extend this function to return any other types your class implements.
@@ -232,7 +273,26 @@ void HologramScoutMod::SelectCombatant(cCombatantPtr combatant)
 {
 	GameNounManager.GetAvatar()->mpCombatantTarget = combatant.get();
 	mpLayout->FindWindowByID(id("TargetCreatureUI"))->SetVisible(true);
+	mpSelectedCombatant = combatant;
 	SporeDebugPrint("Selected combatant!");
+
+	if (object_cast<Simulator::cSpatialObject>(combatant))
+	{
+		Simulator::cSpatialObject* spatial = object_cast<Simulator::cSpatialObject>(combatant);
+		auto& key = spatial->GetModelKey();
+
+		SporeDebugPrint("(0x%x!0x%x.0x%x)", key.groupID, key.instanceID, key.typeID);
+		auto imageKey = ResourceKey(key.instanceID, TypeIDs::png, key.groupID);
+
+		if (ResourceManager.GetResource(imageKey, nullptr))
+		{
+			auto imageDraw = new UTFWin::ImageDrawable();
+			ImagePtr image;
+			UTFWin::Image::GetImage(imageKey, image);
+			imageDraw->SetImage(image.get());
+			mpLayout->FindWindowByID(id("TargetCreatureImage"))->SetDrawable(imageDraw);
+		}
+	}
 }
 
 void HologramScoutMod::DeselectCombatant()
