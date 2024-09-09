@@ -43,18 +43,21 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 
 	if (line.HasFlag("attk"))
 	{
-		/*Vector3 pos = avatar->mPosition;
-		float closestDist = 99999999999999;
-		for (auto combatant : Simulator::GetData<Simulator::cCreatureAnimal>())
+		if (!avatar->mpCombatantTarget)
 		{
-			float dist = Math::distance(combatant->ToSpatialObject()->GetPosition(), pos);
-			if (dist < closestDist && combatant != avatar && dist != 0.0)
+			Vector3 pos = avatar->mPosition;
+			float closestDist = 99999999999999;
+			for (auto combatant : Simulator::GetData<Simulator::cCreatureAnimal>())
 			{
-				closestDist = dist;
-				avatar->mpCombatantTarget = combatant.get();
-				avatar->mpTarget = combatant.get();
+				float dist = Math::distance(combatant->ToSpatialObject()->GetPosition(), pos);
+				if (dist < closestDist && combatant != avatar && dist != 0.0)
+				{
+					closestDist = dist;
+					avatar->mpCombatantTarget = combatant.get();
+					avatar->mpTarget = combatant.get();
+				}
 			}
-		}*/
+		}
 
 		auto count = avatar->GetAbilitiesCount();
 		int index = 6;

@@ -67,6 +67,8 @@ virtual_detour(Chocice75_ImprovedHologramScout_OnUseDetour, cGetOutOfUFOToolStra
 			avatar->SetCurrentBrainLevel(5);
 			avatar->mMaxHealthPoints = max(avatar->mHealthPoints, avatar->mMaxHealthPoints);
 
+			HologramScoutMod::Get()->InitialiseAbilities(isSpecial);
+
 			if (result && avatar && isSpecial)
 			{
 

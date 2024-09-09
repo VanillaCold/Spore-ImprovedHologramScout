@@ -26,12 +26,48 @@ HologramScoutMod* HologramScoutMod::Get()
 	return sInstance;
 }
 
+void HologramScoutMod::InitialiseAbilities(bool isSpecial = false)
+{
+	auto avatar = GameNounManager.GetAvatar();
+	if (Simulator::IsSpaceGame() && avatar)
+	{
+		for (int i = 0; i < avatar->GetAbilitiesCount(); i++)
+		{
+			auto ability = avatar->GetAbility(i);
+			if (ability->mType == 30 || ability->mType == 62 || ability->mType == 74)
+			{
+				mpCombatSkills.emplace(0, ability);
+			}
+			if (ability->mType == 31 || ability->mType == 61 || ability->mType == 73)
+			{
+				mpCombatSkills.emplace(1, ability);
+			}
+			if (ability->mType == 33 || ability->mType == 65 || ability->mType == 75)
+			{
+				mpCombatSkills.emplace(2, ability);
+			}
+			if (ability->mType == 32 || ability->mType == 66 || ability->mType == 72)
+			{
+				mpCombatSkills.emplace(3, ability);
+			}
+
+			if (ability->mType == 29)
+			{
+				mpScanAbilities.emplace(0, ability);
+			}
+		}
+	}
+}
+
 void HologramScoutMod::Update()
 {
 	if (Simulator::IsSpaceGame() && GameNounManager.GetAvatar())
 	{
 		wasActive = 1;
+		
+		
 		auto avatar = GameNounManager.GetAvatar();
+		//Make sure that each creature is sized appropriately.
 		for (auto creature : Simulator::GetData<Simulator::cCreatureAnimal>())
 		{
 			if (creature != avatar && creature->mbEnabled)
@@ -43,36 +79,42 @@ void HologramScoutMod::Update()
 		}
 
 		//Selection code
+		//Get the camera position and mouse direction
 		Vector3 cameraPosition, mouseDir;
 		App::GetViewer()->GetCameraToMouse(cameraPosition, mouseDir);
+		//and also get the view direction.
 		auto viewDir = CameraManager.GetViewer()->GetViewTransform().GetRotation().Row(1);
+		//Initialize a vector of spaital objects
 		vector<cSpatialObjectPtr> objects;
-		Vector3 intersection;
 
-		Graphics::FilterSettings filter;
-		filter.collisionMode = Graphics::CollisionMode::MeshCluster;
-
+		//Raycast to find all items in the view.
 		if (GameViewManager.RaycastAll(cameraPosition, cameraPosition + mouseDir * 1000.0f, objects, true))
 		{
 			cCombatantPtr comb;
+			//For each, check if it's a combatant.
 			for each (cSpatialObjectPtr obj in objects)
 			{
 				if (object_cast<Simulator::cCombatant>(obj))
 				{
+					//if it is, then set comb to be the object and then break from the foreach loop.
 					comb = object_cast<Simulator::cCombatant>(obj);
 					break;
 				}
 			}
 
-			if (comb != nullptr)
+			//If the combatant is neither null nor the player avatar,
+			if (comb != nullptr && comb != object_cast<Simulator::cCombatant>(avatar))
 			{
+				//Check if the terrain intersects with it.
 				if (PlanetModel.mpTerrain->Raycast(cameraPosition, comb->ToSpatialObject()->mPosition) == Vector3(0, 0, 0))
 				{
-					SporeDebugPrint("raycasted!");
+					//SporeDebugPrint("raycasted!");
 
-					SporeDebugPrint("%f, %f", comb->mHealthPoints, comb->mMaxHealthPoints);
+					//SporeDebugPrint("%f, %f", comb->mHealthPoints, comb->mMaxHealthPoints);
+					//If the hovered combatant isn't the same as the one just found,
 					if (mpHoveredCombatant != comb)
 					{
+						//set the hovered combatant to not be hovered, and set the new one to be the hovered combatant.
 						comb->ToSpatialObject()->SetIsRolledOver(true);
 						if (mpHoveredCombatant)
 						{
@@ -81,7 +123,7 @@ void HologramScoutMod::Update()
 						mpHoveredCombatant = comb;
 					}
 				}
-				else
+				else //if the terrain intersects, set the hovered combatant to nullptr.
 				{
 					comb = nullptr;
 					mpHoveredCombatant = nullptr;
@@ -89,14 +131,18 @@ void HologramScoutMod::Update()
 			}
 			else
 			{
+				//If it's not null, but it should no longer be hoveed,
 				if (mpHoveredCombatant != nullptr)
 				{
+					//set it to not be hovered.
 					mpHoveredCombatant->ToSpatialObject()->SetIsRolledOver(false);
 				}
 			}
 		}
 
+		//Get player input
 		GetPlayerInput(avatar);
+		//update the UI
 		UpdateUI();
 			
 		if (isSpecial)
@@ -148,6 +194,48 @@ void HologramScoutMod::Update()
 
 void HologramScoutMod::GetPlayerInput(cCreatureBasePtr avatar)
 {
+	uint32_t num1 = 0x10000001;
+	uint32_t num2 = 0x10000002;
+	uint32_t num3 = 0x10000003;
+	uint32_t num4 = 0x10000004;
+
+	map<byte, Simulator::cCreatureAbility*> abilities = mpScanAbilities;
+	if (mbAbilityMode)
+	{
+		abilities = mpCombatSkills;
+	}
+
+	if (GameInputManager.IsTriggered(num1))
+	{
+		TriggerSkill(abilities.find(0).mpNode->mValue.second);
+	}
+	if (GameInputManager.IsTriggered(num2))
+	{
+		TriggerSkill(abilities.find(1).mpNode->mValue.second);
+	}
+	if (GameInputManager.IsTriggered(num3))
+	{
+		TriggerSkill(abilities.find(2).mpNode->mValue.second);
+	}
+	if (GameInputManager.IsTriggered(num4))
+	{
+		TriggerSkill(abilities.find(3).mpNode->mValue.second);
+	}
+
+
+	if (GameInputManager.IsTriggered(0x00000031))
+	{
+		if (mbPressedTab == 0)
+		{
+			mbAbilityMode = !mbAbilityMode;
+		}
+		mbPressedTab = 1;
+	}
+	else
+	{
+		mbPressedTab = 0;
+	}
+
 	if (GameInputManager.IsTriggered(0x00000007)) //Spacebar
 	{
 		if (!mbPressedSpace)
@@ -228,6 +316,14 @@ void HologramScoutMod::OpenUI(bool useAbilities)
 
 void HologramScoutMod::UpdateUI()
 {
+	auto specialAbilitySlots = mpLayout->FindWindowByID(id("CrtSpecialAbilities"));
+	if (specialAbilitySlots)
+	{
+		specialAbilitySlots->FindWindowByID(id("ScanPanel"))->SetVisible(!mbAbilityMode);
+		specialAbilitySlots->FindWindowByID(id("CombatPanel"))->SetVisible(mbAbilityMode);
+	}
+
+	// Update stats UI.
 	//doing this so that we won't need to recursively search all windows repeatedly
 	auto statDisplay = mpLayout->FindWindowByID(id("StatDisplay"));
 	auto avatar = GameNounManager.GetAvatar();
@@ -238,18 +334,27 @@ void HologramScoutMod::UpdateUI()
 	}
 
 	auto healthText = statDisplay->FindWindowByID(id("CrtHealthText"));
-	
+
 	string16 text;
 	text.sprintf(u"%i", int(avatar->mHealthPoints));
 
 	healthText->SetCaption(text.c_str());
-
-
 	float healthPercent = avatar->mHealthPoints / avatar->mMaxHealthPoints;
 	auto healthBar = statDisplay->FindWindowByID(id("CrtHealthBar"));
 	healthBar->SetArea(Math::Rectangle(0, 0, 68 * healthPercent, 13));
 	healthBar->SetFlag(UTFWin::WindowFlags::kWinFlagClip, true);
 	healthBar->GetParent()->SetFlag(UTFWin::WindowFlags::kWinFlagClip, true);
+
+
+	auto energyText = statDisplay->FindWindowByID(id("CrtEnergyDisplay"));
+
+	string16 energyCaption;
+	energyCaption.sprintf(u"%i", int(avatar->mEnergy));
+
+	energyText->SetCaption(energyCaption.c_str());
+	float energyPercent = avatar->mEnergy / avatar->mMaxEnergy;
+	auto energyBar = statDisplay->FindWindowByID(id("CrtEnergyBar"));
+	energyBar->SetArea(Math::Rectangle(0, 0, 68 * healthPercent, 13));
 
 }
 
@@ -298,6 +403,31 @@ void HologramScoutMod::SelectCombatant(cCombatantPtr combatant)
 void HologramScoutMod::DeselectCombatant()
 {
 	mpLayout->FindWindowByID(id("TargetCreatureUI"))->SetVisible(false);
+}
+
+
+
+
+void HologramScoutMod::TriggerSkill(Simulator::cCreatureAbility* ability)
+{
+	auto avatar = GameNounManager.GetAvatar();
+	if (avatar)
+	{
+		int abilityCount = avatar->GetAbilitiesCount();
+		int index = -1;
+		for (int i = 0; i < abilityCount; i++)
+		{
+			if (avatar->GetAbility(i) == ability)
+			{
+				index = i;
+				break;
+			}
+		}
+		if (index != -1)
+		{
+			avatar->PlayAbility(index);
+		}
+	}
 }
 
 

@@ -56,6 +56,17 @@ any mouse_button_middle = 0x00000018
 // set avatar movement goal
 any mouse_button_right = 0x00000020
 
+//############################
+//### custom controls ###
+
+// switch one
+any tab = 0x00000031
+
+// numbers 1 through 4, for ability usage
+any 1 = 0x10000001
+any 2 = 0x10000002
+any 3 = 0x10000003
+any 4 = 0x10000004
 
 // ##### debug cheats ######
 // debug locomotion
