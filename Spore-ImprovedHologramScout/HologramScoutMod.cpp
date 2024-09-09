@@ -354,7 +354,7 @@ void HologramScoutMod::UpdateUI()
 	energyText->SetCaption(energyCaption.c_str());
 	float energyPercent = avatar->mEnergy / avatar->mMaxEnergy;
 	auto energyBar = statDisplay->FindWindowByID(id("CrtEnergyBar"));
-	energyBar->SetArea(Math::Rectangle(0, 0, 68 * healthPercent, 13));
+	energyBar->SetArea(Math::Rectangle(0, 0, 68 * energyPercent, 13));
 
 }
 
