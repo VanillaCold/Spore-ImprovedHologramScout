@@ -20,3 +20,5 @@ static_detour(HologramAudioDetour, void(uint32_t, Audio::AudioTrack, Vector3)){}
 
 //Stop the scout from looking like a hlogram when it's not a hologram.
 member_detour(SetRenderType__detour, App::cViewer, void(int, bool)) {};
+
+member_detour(PlayAbilityDetour, Simulator::cCreatureBase, void(int abilityIndex, Anim::AnimIndex* dstAnimIndex)) {};

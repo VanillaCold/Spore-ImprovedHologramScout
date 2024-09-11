@@ -50,6 +50,8 @@ public:
 	cCombatantPtr mpHoveredCombatant;
 	cCombatantPtr mpSelectedCombatant;
 
+	Simulator::cCreatureAbility* delayedAbility;
+
 	bool mbAbilityMode;
 	map<byte, Simulator::cCreatureAbility*> mpScanAbilities;
 	map<byte, Simulator::cCreatureAbility*> mpCombatSkills;

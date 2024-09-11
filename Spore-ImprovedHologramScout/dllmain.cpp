@@ -7,6 +7,7 @@
 #include <Spore\Simulator\SubSystem\TerraformingManager.h>
 #include <Spore/Editors/BakeManager.h>
 #include "Detours.h"
+#include "HologramCombatManager.h"
 using namespace Simulator;
 
 void Initialize()
@@ -21,6 +22,7 @@ void Initialize()
 	CheatManager.AddCheat("SpawnAvatar", new SpawnAvatarCheat());
 
 	App::AddUpdateFunction(new HologramScoutMod());
+	new HologramCombatManager();
 }
 
 void Dispose()
@@ -37,6 +39,7 @@ void AttachDetours()
 
 	HologramAudioDetour::attach(GetAddress(Audio,PlayProceduralAudio));
 	OverrideCreatureDamageDetour::attach(Address(0x00bfcf10));
+	PlayAbilityDetour::attach(GetAddress(Simulator::cCreatureBase, PlayAbility));
 	// Call the attach() method on any detours you want to add
 	// For example: cViewer_SetRenderType_detour::attach(GetAddress(cViewer, SetRenderType));
 }

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Detours.h"
 #include <Spore/Simulator/SubSystem/TerraformingManager.h>
+#include "HologramCombatManager.h";
 
 int OverrideCreatureDamageDetour::DETOUR(float damage, uint32_t attackerPoliticalID, int unk, const Vector3& unkPos, cCombatant* pAttacker)
 {
@@ -21,9 +22,34 @@ int OverrideCreatureDamageDetour::DETOUR(float damage, uint32_t attackerPolitica
 				//set the damage to ability->mDamage, so that it isn't overpowered.
 				damage = ability->mDamage;
 			}
+			else
+			{
+				ability = HologramCombatManager::Get()->GetLastAbilityUsed(creature);
+				if (ability)
+				{
+					damage = ability->mDamage;
+				}
+			}
 		}
 	}
 	SporeDebugPrint("Damage is %f, caused by political ID of 0x%x", damage, attackerPoliticalID);
 	return original_function(this, damage, attackerPoliticalID, unk, unkPos, pAttacker);
 }
 
+void PlayAbilityDetour::DETOUR(int abilityIndex, Anim::AnimIndex* dstAnimIndex)
+{
+	if (Simulator::IsSpaceGame())
+	{
+		AbilityUsedData* data = new AbilityUsedData();
+		auto ability = this->GetAbility(abilityIndex);
+		if (ability)
+		{
+			data->mAbilityKey = ability->mpPropList->GetResourceKey();
+			data->mpAbility = ability;
+			data->mpCreatureTarget = this->mpCombatantTarget;
+			data->mpSourceCreature = this;
+			MessageManager.MessageSend(id("SpaceGameAttackused"), data);
+		}
+	}
+	return original_function(this, abilityIndex, dstAnimIndex);
+}

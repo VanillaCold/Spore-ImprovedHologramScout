@@ -78,21 +78,21 @@ void HologramScoutMod::Update()
 					creature->mScale /= (0.25f);
 					creature->mMaxHealthPoints = max(creature->mHealthPoints, creature->mMaxHealthPoints);
 
-					creature->mEnergy += creature->mpSpeciesProfile->mEnergyRecoveryRate;
-					creature->mHealthPoints += creature->mpSpeciesProfile->mHealthRecoveryRate;
+					//creature->mEnergy += creature->mpSpeciesProfile->mEnergyRecoveryRate;
+					//creature->mHealthPoints += creature->mpSpeciesProfile->mHealthRecoveryRate;
 
-					creature->mEnergy = clamp(0.0f, creature->mEnergy, creature->mMaxEnergy);
-					creature->mHealthPoints = clamp(0.0f, creature->mHealthPoints, creature->mMaxHealthPoints);
+					//creature->mEnergy = clamp(0.0f, creature->mEnergy, creature->mMaxEnergy);
+					//creature->mHealthPoints = clamp(0.0f, creature->mHealthPoints, creature->mMaxHealthPoints);
 				}
 			}
 		}
-		SporeDebugPrint("%x, %x", avatar->mpSpeciesProfile->mHealthRecoveryRate, avatar->mpSpeciesProfile->mEnergyRecoveryRate);
+		//SporeDebugPrint("%x, %x", avatar->mpSpeciesProfile->mHealthRecoveryRate, avatar->mpSpeciesProfile->mEnergyRecoveryRate);
 
-		avatar->mEnergy += avatar->mpSpeciesProfile->mEnergyRecoveryRate;
-		avatar->mHealthPoints += avatar->mpSpeciesProfile->mHealthRecoveryRate;
+		//avatar->mEnergy += avatar->mpSpeciesProfile->mEnergyRecoveryRate;
+		//avatar->mHealthPoints += avatar->mpSpeciesProfile->mHealthRecoveryRate;
 
-		avatar->mEnergy = clamp(0.0f, avatar->mEnergy, avatar->mMaxEnergy);
-		avatar->mHealthPoints = clamp(0.0f, avatar->mHealthPoints, mMaxPlayerHealth);
+		//avatar->mEnergy = clamp(0.0f, avatar->mEnergy, avatar->mMaxEnergy);
+		//avatar->mHealthPoints = clamp(0.0f, avatar->mHealthPoints, mMaxPlayerHealth);
 
 		//Selection code
 		//Get the camera position and mouse direction
@@ -153,6 +153,18 @@ void HologramScoutMod::Update()
 					//set it to not be hovered.
 					mpHoveredCombatant->ToSpatialObject()->SetIsRolledOver(false);
 				}
+			}
+		}
+		
+		if (delayedAbility)
+		{
+			if (mpSelectedCombatant == avatar->mpCombatantTarget)
+			{
+				TriggerSkill(delayedAbility);
+			}
+			else
+			{
+				delayedAbility = nullptr;
 			}
 		}
 
@@ -270,6 +282,7 @@ void HologramScoutMod::GetPlayerInput(cCreatureBasePtr avatar)
 		if (!mbPressedSpace)
 		{
 			mbPressedSpace = 1;
+			delayedAbility = nullptr;
 			if (avatar->mbSupported || CreatureGameData.mNumFlapsAllowed > 0)
 			{
 				if (avatar->mbSupported)
@@ -304,7 +317,7 @@ void HologramScoutMod::GetPlayerInput(cCreatureBasePtr avatar)
 	bool leftClick = GameInputManager.IsTriggered(0x00000016);
 	if (leftClick) //Left click
 	{
-		SporeDebugPrint("click!");
+		//SporeDebugPrint("click!");
 		if (mpHoveredCombatant)
 		{
 			SelectCombatant(mpHoveredCombatant);
@@ -460,6 +473,7 @@ void HologramScoutMod::TriggerSkill(Simulator::cCreatureAbility* ability)
 		if (floor(distance) > ability->mRange && distance > ability->mRushingRange)
 		{
 			avatar->WalkTo(1,avatar->mpCombatantTarget->ToSpatialObject()->mPosition, avatar->mpCombatantTarget->ToSpatialObject()->mPosition.Normalized());
+			delayedAbility = ability;
 			return;
 		}
 		if (ceil(distance) < ability->mAvatarRangeMin)
@@ -486,6 +500,14 @@ void HologramScoutMod::TriggerSkill(Simulator::cCreatureAbility* ability)
 		{
 			avatar->PlayAbility(index);
 		}
+		else
+		{
+			delayedAbility = nullptr;
+		}
+	}
+	else
+	{
+		delayedAbility = nullptr;
 	}
 }
 
