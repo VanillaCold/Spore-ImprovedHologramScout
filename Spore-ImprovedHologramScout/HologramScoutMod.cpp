@@ -70,13 +70,29 @@ void HologramScoutMod::Update()
 		//Make sure that each creature is sized appropriately.
 		for (auto creature : Simulator::GetData<Simulator::cCreatureAnimal>())
 		{
-			if (creature != avatar && creature->mbEnabled)
+			if (creature->mbEnabled)
 			{
-				creature->SetScale(creature->mScale * 0.25f);
-				creature->mScale /= (0.25f);
-				creature->mMaxHealthPoints = max(creature->mHealthPoints, creature->mMaxHealthPoints);
+				if (creature != avatar)
+				{
+					creature->SetScale(creature->mScale * 0.25f);
+					creature->mScale /= (0.25f);
+					creature->mMaxHealthPoints = max(creature->mHealthPoints, creature->mMaxHealthPoints);
+
+					creature->mEnergy += creature->mpSpeciesProfile->mEnergyRecoveryRate;
+					creature->mHealthPoints += creature->mpSpeciesProfile->mHealthRecoveryRate;
+
+					creature->mEnergy = clamp(0.0f, creature->mEnergy, creature->mMaxEnergy);
+					creature->mHealthPoints = clamp(0.0f, creature->mHealthPoints, creature->mMaxHealthPoints);
+				}
 			}
 		}
+		SporeDebugPrint("%x, %x", avatar->mpSpeciesProfile->mHealthRecoveryRate, avatar->mpSpeciesProfile->mEnergyRecoveryRate);
+
+		avatar->mEnergy += avatar->mpSpeciesProfile->mEnergyRecoveryRate;
+		avatar->mHealthPoints += avatar->mpSpeciesProfile->mHealthRecoveryRate;
+
+		avatar->mEnergy = clamp(0.0f, avatar->mEnergy, avatar->mMaxEnergy);
+		avatar->mHealthPoints = clamp(0.0f, avatar->mHealthPoints, mMaxPlayerHealth);
 
 		//Selection code
 		//Get the camera position and mouse direction
@@ -144,6 +160,11 @@ void HologramScoutMod::Update()
 		GetPlayerInput(avatar);
 		//update the UI
 		UpdateUI();
+
+		if (!avatar->mpCombatantTarget && mpSelectedCombatant)
+		{
+			DeselectCombatant();
+		}
 			
 		if (isSpecial)
 		{
@@ -207,19 +228,27 @@ void HologramScoutMod::GetPlayerInput(cCreatureBasePtr avatar)
 
 	if (GameInputManager.IsTriggered(num1))
 	{
-		TriggerSkill(abilities.find(0).mpNode->mValue.second);
+		auto ability = abilities.find(0);
+		if (ability != abilities.end())
+			TriggerSkill(ability.mpNode->mValue.second);
 	}
 	if (GameInputManager.IsTriggered(num2))
 	{
-		TriggerSkill(abilities.find(1).mpNode->mValue.second);
+		auto ability = abilities.find(1);
+		if (ability != abilities.end())
+			TriggerSkill(ability.mpNode->mValue.second);
 	}
 	if (GameInputManager.IsTriggered(num3))
 	{
-		TriggerSkill(abilities.find(2).mpNode->mValue.second);
+		auto ability = abilities.find(2);
+		if (ability != abilities.end())
+			TriggerSkill(ability.mpNode->mValue.second);
 	}
 	if (GameInputManager.IsTriggered(num4))
 	{
-		TriggerSkill(abilities.find(3).mpNode->mValue.second);
+		auto ability = abilities.find(3);
+		if (ability != abilities.end())
+			TriggerSkill(ability.mpNode->mValue.second);
 	}
 
 
@@ -378,24 +407,37 @@ void HologramScoutMod::SelectCombatant(cCombatantPtr combatant)
 {
 	GameNounManager.GetAvatar()->mpCombatantTarget = combatant.get();
 	mpLayout->FindWindowByID(id("TargetCreatureUI"))->SetVisible(true);
+
 	mpSelectedCombatant = combatant;
 	SporeDebugPrint("Selected combatant!");
 
 	if (object_cast<Simulator::cSpatialObject>(combatant))
 	{
 		Simulator::cSpatialObject* spatial = object_cast<Simulator::cSpatialObject>(combatant);
-		auto& key = spatial->GetModelKey();
+		auto key = spatial->GetModelKey();
+
+		if (object_cast<Simulator::cCreatureBase>(combatant))
+		{
+			key = object_cast<Simulator::cCreatureBase>(combatant)->mSpeciesKey;
+		}
 
 		SporeDebugPrint("(0x%x!0x%x.0x%x)", key.groupID, key.instanceID, key.typeID);
 		auto imageKey = ResourceKey(key.instanceID, TypeIDs::png, key.groupID);
 
+		auto window = mpLayout->FindWindowByID(id("TargetCreatureImage"));
 		if (ResourceManager.GetResource(imageKey, nullptr))
 		{
 			auto imageDraw = new UTFWin::ImageDrawable();
 			ImagePtr image;
 			UTFWin::Image::GetImage(imageKey, image);
 			imageDraw->SetImage(image.get());
-			mpLayout->FindWindowByID(id("TargetCreatureImage"))->SetDrawable(imageDraw);
+			window->SetDrawable(imageDraw);
+			window->Revalidate();
+			window->SetVisible(true);
+		}
+		else
+		{
+			window->SetVisible(false);
 		}
 	}
 }
@@ -411,8 +453,25 @@ void HologramScoutMod::DeselectCombatant()
 void HologramScoutMod::TriggerSkill(Simulator::cCreatureAbility* ability)
 {
 	auto avatar = GameNounManager.GetAvatar();
-	if (avatar)
+	if (avatar && avatar->mpCombatantTarget && ability)
 	{
+		auto distance = Math::distance(avatar->mPosition, avatar->mpCombatantTarget->ToSpatialObject()->mPosition);
+		//SporeDebugPrint("distance is %f, range is %f", distance, ability->mRange);
+		if (floor(distance) > ability->mRange && distance > ability->mRushingRange)
+		{
+			avatar->WalkTo(1,avatar->mpCombatantTarget->ToSpatialObject()->mPosition, avatar->mpCombatantTarget->ToSpatialObject()->mPosition.Normalized());
+			return;
+		}
+		if (ceil(distance) < ability->mAvatarRangeMin)
+		{
+			return;
+		}
+
+		if (ability->mEnergyCost > avatar->mEnergy)
+		{
+			return;
+		}
+
 		int abilityCount = avatar->GetAbilitiesCount();
 		int index = -1;
 		for (int i = 0; i < abilityCount; i++)

@@ -23,6 +23,7 @@ public:
 	bool wasActive;
 	GameInput input;
 	float boundingRadius;
+	float mMaxPlayerHealth;
 
 	HologramScoutMod();
 	~HologramScoutMod();

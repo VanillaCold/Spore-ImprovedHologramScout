@@ -25,6 +25,9 @@
     <ClInclude Include="HologramScoutMod.h">
       <Filter>Spore-ImprovedHologramScout</Filter>
     </ClInclude>
+    <ClInclude Include="Detours.h">
+      <Filter>Spore-ImprovedHologramScout</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -37,6 +40,15 @@
       <Filter>Spore-ImprovedHologramScout</Filter>
     </ClCompile>
     <ClCompile Include="HologramScoutMod.cpp">
+      <Filter>Spore-ImprovedHologramScout</Filter>
+    </ClCompile>
+    <ClCompile Include="HoloScoutDetours.cpp">
+      <Filter>Spore-ImprovedHologramScout</Filter>
+    </ClCompile>
+    <ClCompile Include="CombatantDetours.cpp">
+      <Filter>Spore-ImprovedHologramScout</Filter>
+    </ClCompile>
+    <ClCompile Include="MiscDetours.cpp">
       <Filter>Spore-ImprovedHologramScout</Filter>
     </ClCompile>
   </ItemGroup>
