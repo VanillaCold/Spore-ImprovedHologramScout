@@ -1,4 +1,4 @@
-int32 clickFruitOrTrees 1
+int32 clickFruitOrTrees 0
 bool creatureTreesEnabled true
 bool effectSpawnedRocksEnabled true
 bool fruitAutoDroppingEnabled true
@@ -8,3 +8,4 @@ float fruitPropMaxOnGroundTime 50
 float fruitPropMaxRegrowthTime 500
 float fruitPropMaxRottingTime 20
 float fruitPropMinHangingTime 10
+bool fruitRegrowthEnabled true

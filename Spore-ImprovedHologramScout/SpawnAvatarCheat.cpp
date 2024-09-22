@@ -64,7 +64,7 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 		for (int i = 0; i < count; i++)
 		{
 			auto ability = avatar->GetAbility(i);
-			if (ability->mCategory == 1)
+			if (ability && ability->mCategory == 1)
 			{
 				index = i;
 				break;
@@ -72,13 +72,15 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 		}
 		size_t argCount;
 		auto args = line.GetArgumentsRange(&argCount, 0, 1);
+		
 		if (argCount != 0)
 		{
 			index = mpFormatParser->ParseInt(args[0]);
 		}
-		auto ability = avatar->GetAbility(index);
-		SporeDebugPrint("%i, %ls, 0x%x", index,
-			ability->nName.GetText(), ability->mpPropList->GetResourceKey().instanceID );
+
+		//auto ability = avatar->GetAbility(index);
+		//SporeDebugPrint("%i, %ls, 0x%x", index,
+		//	ability->nName.GetText(), ability->mpPropList->GetResourceKey().instanceID );
 
 		avatar->PlayAbility(index);
 		//CALL(Address(0x00c1e5c0), int, Args(Simulator::cCreatureBase*, int, Anim::AnimIndex), Args(avatar, index, 0));

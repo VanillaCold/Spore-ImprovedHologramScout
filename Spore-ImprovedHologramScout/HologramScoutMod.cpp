@@ -112,6 +112,11 @@ void HologramScoutMod::Update()
 			{
 				if (object_cast<Simulator::cCombatant>(obj))
 				{
+
+					//&&
+					//	(object_cast<Simulator::cGamePlant>(obj) || object_cast<Simulator::cCreatureBase>(obj) || object_cast<Simulator::cBuilding>(obj)
+					//		|| object_cast<Simulator::cTurret>(obj) || object_cast<Simulator::cVehicle>(obj) || object_cast<Simulator::cGameDataUFO>(obj))
+
 					//if it is, then set comb to be the object and then break from the foreach loop.
 					comb = object_cast<Simulator::cCombatant>(obj);
 					break;
@@ -128,6 +133,9 @@ void HologramScoutMod::Update()
 
 					//SporeDebugPrint("%f, %f", comb->mHealthPoints, comb->mMaxHealthPoints);
 					//If the hovered combatant isn't the same as the one just found,
+
+
+
 					if (mpHoveredCombatant != comb)
 					{
 						//set the hovered combatant to not be hovered, and set the new one to be the hovered combatant.

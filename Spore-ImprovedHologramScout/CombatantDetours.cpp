@@ -38,7 +38,7 @@ int OverrideCreatureDamageDetour::DETOUR(float damage, uint32_t attackerPolitica
 
 void PlayAbilityDetour::DETOUR(int abilityIndex, Anim::AnimIndex* dstAnimIndex)
 {
-	if (Simulator::IsSpaceGame())
+	if (Simulator::IsSpaceGame() && !Simulator::IsScenarioMode())
 	{
 		AbilityUsedData* data = new AbilityUsedData();
 		auto ability = this->GetAbility(abilityIndex);

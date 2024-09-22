@@ -8,6 +8,10 @@
 #include <Spore/Editors/BakeManager.h>
 #include "Detours.h"
 #include "HologramCombatManager.h"
+#include <SourceCode/DLL/Application.h>
+
+#include <Spore/App/cGameModeManager.h>
+
 using namespace Simulator;
 
 void Initialize()
