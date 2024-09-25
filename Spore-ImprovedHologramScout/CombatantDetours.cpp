@@ -6,27 +6,47 @@
 int OverrideCreatureDamageDetour::DETOUR(float damage, uint32_t attackerPoliticalID, int unk, const Vector3& unkPos, cCombatant* pAttacker)
 {
 	//Get the attacker, and verify it's the space-stage.
-	if (pAttacker && Simulator::IsSpaceGame())
+	if (Simulator::IsSpaceGame())
 	{
-		//Cast the attacker to a creature.
-		auto creature = object_cast<Simulator::cCreatureBase>(pAttacker);
-		if (creature) //if it is one,
+		if (pAttacker)
 		{
-			//Get the current ability index being used,
-			uint32_t attackIndex = creature->mCurrentAttackIdx;
-			//and get the ability from that.
-			auto ability = creature->GetAbility(attackIndex);
-			//If it's a valid ability,
-			if (ability)
+			//Cast the attacker to a creature.
+			auto creature = object_cast<Simulator::cCreatureBase>(pAttacker);
+			if (creature) //if it is one,
 			{
-				//set the damage to ability->mDamage, so that it isn't overpowered.
-				damage = ability->mDamage;
-			}
-			else
-			{
-				ability = HologramCombatManager::Get()->GetLastAbilityUsed(creature);
+				//Get the current ability index being used,
+				uint32_t attackIndex = creature->mCurrentAttackIdx;
+				//and get the ability from that.
+				auto ability = creature->GetAbility(attackIndex);
+				//If it's a valid ability,
 				if (ability)
 				{
+					//set the damage to ability->mDamage, so that it isn't overpowered.
+					damage = ability->mDamage;
+				}
+				else
+				{
+					ability = HologramCombatManager::Get()->GetLastAbilityUsed(creature);
+					if (ability)
+					{
+						damage = ability->mDamage;
+					}
+				}
+			}
+		}
+		else if (GameNounManager.GetAvatar() && int(damage) == 9999)
+		{
+			//just pickup the last creature - assume it's caused by that.
+			SporeDebugPrint("a");
+			auto crt = HologramCombatManager::Get()->mpLastCreatureToAttack;
+			if (crt)
+			{
+				SporeDebugPrint("b");
+				//get the new ability
+				auto ability = HologramCombatManager::Get()->GetLastAbilityUsed(crt);
+				if (ability)
+				{
+					SporeDebugPrint("c");
 					damage = ability->mDamage;
 				}
 			}

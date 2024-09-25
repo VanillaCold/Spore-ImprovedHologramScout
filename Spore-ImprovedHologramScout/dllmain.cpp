@@ -42,7 +42,7 @@ void AttachDetours()
 	//CreatureBaseDetour::attach(GetAddress(Simulator::cCreatureBase, WalkTo));
 
 	HologramAudioDetour::attach(GetAddress(Audio,PlayProceduralAudio));
-	OverrideCreatureDamageDetour::attach(Address(0x00bfcf10));
+	OverrideCreatureDamageDetour::attach(Address(ModAPI::ChooseAddress(0x00bfc500, 0x00bfcf10)));
 	PlayAbilityDetour::attach(GetAddress(Simulator::cCreatureBase, PlayAbility));
 	// Call the attach() method on any detours you want to add
 	// For example: cViewer_SetRenderType_detour::attach(GetAddress(cViewer, SetRenderType));

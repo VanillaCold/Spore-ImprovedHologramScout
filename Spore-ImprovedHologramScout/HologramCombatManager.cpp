@@ -9,6 +9,7 @@ HologramCombatManager::HologramCombatManager()
 	MessageManager.AddListener(this, id("SpaceGameAttackUsed"));
 
 	mpLastUsedAbilities = hash_map<uint32_t, Simulator::cCreatureAbility*>();
+	mpLastCreatureToAttack = nullptr;
 }
 
 
@@ -47,12 +48,19 @@ bool HologramCombatManager::HandleMessage(uint32_t messageID, void* message)
 			{
 				mpLastUsedAbilities.erase(castMessage->GetCombatant()->ToGameData()->mID);
 			}
+			auto creature = object_cast<Simulator::cCreatureBase>(castMessage->GetCombatant());
+			if (creature)
+			{
+				mpMaxHealthPoints.erase(creature);
+			}
+
 			break;
 		}
 		case id("SpaceGameAttackused"):
 		{
 			auto castMessage = (AbilityUsedData*)(message);
 			mpLastUsedAbilities.emplace(castMessage->mpSourceCreature->mID, castMessage->mpAbility);
+			mpLastCreatureToAttack = castMessage->mpSourceCreature;
 		}
 	}
 

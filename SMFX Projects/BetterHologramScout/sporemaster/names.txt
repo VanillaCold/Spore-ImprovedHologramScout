@@ -5,6 +5,7 @@ auto_citystyles_models~_ci_shrine_citywalls_large_03
 city_walls_econ_large_03
 auto_citystyles_models~_ci_shrine_citywalls_large_02
 auto_citystyles_models~_ci_shrine_citywalls_large_seaport
+TargetEnergyContainer
 scripts1~	0x24a4f5a
 AbilityUI
 ci_diplo_citywalls_large_02
@@ -39,6 +40,7 @@ layouts_atlas~	0x40464200
 ci_shrine_citywalls_large_03
 ci_shrine_citywalls_large_02
 ExpansionPack1
+TargetHealthContainer
 ci_shrine_citywalls_large_03_seaport
 ci_space_citywalls_large_01
 getoutofufo
@@ -53,6 +55,7 @@ ci_diplo_citywalls_large
 auto_citystyles_models~_ci_diplo_citywalls_large_seaport
 auto_citystyles_models~_ci_shrine_citywalls_large_02_seaport
 spacetools~	0x30608f0b
+TargetEnergyBar
 ci_space_citywalls_large_01_seaport
 citystyles_models~	0x40828100
 CreatureIcon
@@ -72,6 +75,7 @@ StatDisplay
 auto_gametuning~_SpaceFruitTuning
 sg_grob_walls
 travel_panel_top~	0xaf3696d
+TargetHealthText
 TargetCreatureUI
 ci_shrine_citywalls_large_seaport
 CrtEnergyDisplay
@@ -86,6 +90,7 @@ auto_spacetools~_sendscout
 ScanButton
 auto_citystyles_models~_ci_shrine_citywalls_large_03_seaport
 gametuning~	0x2ae0c7e
+TargetEnergyText
 auto_citystyles_models~_ci_castle_citywalls_large_02_seaport
 planet
 CrtHealthBar

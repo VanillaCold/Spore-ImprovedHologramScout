@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "HologramScoutMod.h"
 #include <Spore/Simulator/cCreatureGameData.h>
+#include "HologramCombatManager.h"
 
 HologramScoutMod* HologramScoutMod::sInstance;
 byte HologramScoutMod::RenderToUse;
@@ -76,13 +77,17 @@ void HologramScoutMod::Update()
 				{
 					creature->SetScale(creature->mScale * 0.25f);
 					creature->mScale /= (0.25f);
-					creature->mMaxHealthPoints = max(creature->mHealthPoints, creature->mMaxHealthPoints);
 
-					//creature->mEnergy += creature->mpSpeciesProfile->mEnergyRecoveryRate;
-					//creature->mHealthPoints += creature->mpSpeciesProfile->mHealthRecoveryRate;
-
-					//creature->mEnergy = clamp(0.0f, creature->mEnergy, creature->mMaxEnergy);
-					//creature->mHealthPoints = clamp(0.0f, creature->mHealthPoints, creature->mMaxHealthPoints);
+					auto combatManager = HologramCombatManager::Get();
+					if (combatManager->mpMaxHealthPoints.find(creature.get()) == combatManager->mpMaxHealthPoints.end())
+					{
+						creature->mMaxHealthPoints = max(creature->mHealthPoints, creature->mMaxHealthPoints);
+						combatManager->mpMaxHealthPoints.emplace(creature.get(), creature->mMaxHealthPoints);
+					}
+					else
+					{
+						creature->mMaxHealthPoints = combatManager->mpMaxHealthPoints[creature.get()];
+					}
 				}
 			}
 		}
@@ -405,6 +410,52 @@ void HologramScoutMod::UpdateUI()
 	float energyPercent = avatar->mEnergy / avatar->mMaxEnergy;
 	auto energyBar = statDisplay->FindWindowByID(id("CrtEnergyBar"));
 	energyBar->SetArea(Math::Rectangle(0, 0, 68 * energyPercent, 13));
+
+	if (mpSelectedCombatant)
+	{
+		//TargetHealthbar
+		auto targetUI = mpLayout->FindWindowByID(id("TargetCreatureUI"));
+		auto tHealthBar = targetUI->FindWindowByID(id("TargetHealthbar"));
+		auto tEnergyBar = targetUI->FindWindowByID(id("TargetHealthbar"));
+
+		auto tHealthCaption = targetUI->FindWindowByID(id("TargetHealthText"));
+		auto tEnergyCaption = targetUI->FindWindowByID(id("TargetEnergyText"));
+
+		string16 tHealthText;
+		auto tHealth = mpSelectedCombatant->mHealthPoints;
+		tHealthText.sprintf(u"%i", int(mpSelectedCombatant->mHealthPoints));
+
+		tHealthCaption->SetCaption(tHealthText.c_str());
+
+		float tMaxHealth = mpSelectedCombatant->mMaxHealthPoints;
+
+		auto crtTarget = object_cast<Simulator::cCreatureBase>(mpSelectedCombatant);
+		if (crtTarget)
+		{
+			auto combatManager = HologramCombatManager::Get();
+			if (combatManager->mpMaxHealthPoints.find(crtTarget) != combatManager->mpMaxHealthPoints.end())
+			{
+				tMaxHealth = combatManager->mpMaxHealthPoints[crtTarget];
+			}
+
+			targetUI->FindWindowByID(id("TargetEnergyContainer"))->SetVisible(true);
+			auto creature = object_cast<Simulator::cCreatureBase>(mpSelectedCombatant);
+			string16 tEnergyText;
+			auto tEnergy = creature->mEnergy;
+			
+			tEnergyText.sprintf(u"%i", int(tEnergy));
+
+			tEnergyCaption->SetCaption(tEnergyText.c_str());
+			tEnergyBar->SetArea(Math::Rectangle(0, 0, 68 * tEnergy / creature->mMaxEnergy, 13));
+
+		}
+		else
+		{
+			targetUI->FindWindowByID(id("TargetEnergyContainer"))->SetVisible(false);
+		}
+
+		tHealthBar->SetArea(Math::Rectangle(0, 0, 68 * tHealth / tMaxHealth, 13));
+	}
 
 }
 
