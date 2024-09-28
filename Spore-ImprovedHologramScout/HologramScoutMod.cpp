@@ -91,6 +91,7 @@ void HologramScoutMod::Update()
 				}
 			}
 		}
+
 		//SporeDebugPrint("%x, %x", avatar->mpSpeciesProfile->mHealthRecoveryRate, avatar->mpSpeciesProfile->mEnergyRecoveryRate);
 
 		//avatar->mEnergy += avatar->mpSpeciesProfile->mEnergyRecoveryRate;
@@ -98,6 +99,7 @@ void HologramScoutMod::Update()
 
 		//avatar->mEnergy = clamp(0.0f, avatar->mEnergy, avatar->mMaxEnergy);
 		//avatar->mHealthPoints = clamp(0.0f, avatar->mHealthPoints, mMaxPlayerHealth);
+		avatar->mMaxHealthPoints = mMaxPlayerHealth;
 
 		//Selection code
 		//Get the camera position and mouse direction
@@ -186,8 +188,9 @@ void HologramScoutMod::Update()
 		//update the UI
 		UpdateUI();
 
-		if (!avatar->mpCombatantTarget && mpSelectedCombatant)
+		if ( (!avatar->mpCombatantTarget && mpSelectedCombatant) || (avatar->mpCombatantTarget && avatar->mpCombatantTarget->mHealthPoints <= 0))
 		{
+			avatar->mpCombatantTarget = nullptr;
 			DeselectCombatant();
 		}
 			

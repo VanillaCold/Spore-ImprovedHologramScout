@@ -8,6 +8,11 @@ int OverrideCreatureDamageDetour::DETOUR(float damage, uint32_t attackerPolitica
 	//Get the attacker, and verify it's the space-stage.
 	if (Simulator::IsSpaceGame())
 	{
+		if (this == (Simulator::cCombatant*)GameNounManager.GetAvatar() && HologramScoutMod::Get()->wasActive)
+		{
+			mMaxHealthPoints = HologramScoutMod::Get()->mMaxPlayerHealth;
+		}
+
 		if (pAttacker)
 		{
 			//Cast the attacker to a creature.
@@ -37,16 +42,13 @@ int OverrideCreatureDamageDetour::DETOUR(float damage, uint32_t attackerPolitica
 		else if (GameNounManager.GetAvatar() && int(damage) == 9999)
 		{
 			//just pickup the last creature - assume it's caused by that.
-			SporeDebugPrint("a");
 			auto crt = HologramCombatManager::Get()->mpLastCreatureToAttack;
 			if (crt)
 			{
-				SporeDebugPrint("b");
 				//get the new ability
 				auto ability = HologramCombatManager::Get()->GetLastAbilityUsed(crt);
 				if (ability)
 				{
-					SporeDebugPrint("c");
 					damage = ability->mDamage;
 				}
 			}
