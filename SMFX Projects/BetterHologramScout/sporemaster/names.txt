@@ -48,6 +48,7 @@ ci_space_citywalls_large_02
 auto_citystyles_models~_ci_diplo_citywalls_large_02
 auto_citystyles_models~_ci_diplo_citywalls_large_03
 CrtSpecialAbilities
+ScannedIcon
 ci_shrine_citywalls_large
 ufotools~	0x3064cb38
 HoloScoutUI
@@ -56,6 +57,7 @@ auto_citystyles_models~_ci_diplo_citywalls_large_seaport
 auto_citystyles_models~_ci_shrine_citywalls_large_02_seaport
 spacetools~	0x30608f0b
 TargetEnergyBar
+IsScanned
 ci_space_citywalls_large_01_seaport
 citystyles_models~	0x40828100
 CreatureIcon

@@ -105,6 +105,8 @@ void HologramScoutMod::Update()
 		//Get the camera position and mouse direction
 		Vector3 cameraPosition, mouseDir;
 		App::GetViewer()->GetCameraToMouse(cameraPosition, mouseDir);
+
+
 		//and also get the view direction.
 		auto viewDir = CameraManager.GetViewer()->GetViewTransform().GetRotation().Row(1);
 		//Initialize a vector of spaital objects
@@ -117,12 +119,11 @@ void HologramScoutMod::Update()
 			//For each, check if it's a combatant.
 			for each (cSpatialObjectPtr obj in objects)
 			{
-				if (object_cast<Simulator::cCombatant>(obj))
+				if (object_cast<Simulator::cCombatant>(obj)
+					&&
+						(object_cast<Simulator::cGamePlant>(obj) || object_cast<Simulator::cCreatureBase>(obj) || object_cast<Simulator::cBuilding>(obj)
+							|| object_cast<Simulator::cTurret>(obj) || object_cast<Simulator::cVehicle>(obj) || object_cast<Simulator::cGameDataUFO>(obj)))
 				{
-
-					//&&
-					//	(object_cast<Simulator::cGamePlant>(obj) || object_cast<Simulator::cCreatureBase>(obj) || object_cast<Simulator::cBuilding>(obj)
-					//		|| object_cast<Simulator::cTurret>(obj) || object_cast<Simulator::cVehicle>(obj) || object_cast<Simulator::cGameDataUFO>(obj))
 
 					//if it is, then set comb to be the object and then break from the foreach loop.
 					comb = object_cast<Simulator::cCombatant>(obj);
@@ -134,15 +135,12 @@ void HologramScoutMod::Update()
 			if (comb != nullptr && comb != object_cast<Simulator::cCombatant>(avatar))
 			{
 				//Check if the terrain intersects with it.
-				if (PlanetModel.mpTerrain->Raycast(cameraPosition, comb->ToSpatialObject()->mPosition) == Vector3(0, 0, 0))
+				if (PlanetModel.mpTerrain->Raycast(cameraPosition, (comb->ToSpatialObject()->mPosition - cameraPosition).Normalized()) == Vector3(0, 0, 0))
 				{
 					//SporeDebugPrint("raycasted!");
 
 					//SporeDebugPrint("%f, %f", comb->mHealthPoints, comb->mMaxHealthPoints);
 					//If the hovered combatant isn't the same as the one just found,
-
-
-
 					if (mpHoveredCombatant != comb)
 					{
 						//set the hovered combatant to not be hovered, and set the new one to be the hovered combatant.
@@ -152,6 +150,9 @@ void HologramScoutMod::Update()
 							mpHoveredCombatant->ToSpatialObject()->SetIsRolledOver(false);
 						}
 						mpHoveredCombatant = comb;
+
+						auto transform = CameraManager.GetViewer()->GetCamera()->transform;
+						
 					}
 				}
 				else //if the terrain intersects, set the hovered combatant to nullptr.

@@ -35,6 +35,7 @@ bool Chocice75_ImprovedHologramScout_OnUseDetour::DETOUR(cSpaceToolData* pTool)
 		avatar->SetScale(1.5f);
 
 		HologramScoutMod::Get()->InitialiseAbilities(isSpecial);
+		avatar->SetPoliticalID(Simulator::GetPlayerEmpire()->mPoliticalID);
 
 		if (result && avatar && isSpecial)
 		{

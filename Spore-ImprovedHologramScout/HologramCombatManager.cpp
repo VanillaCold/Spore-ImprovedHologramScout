@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "HologramCombatManager.h"
+#include <Spore/Simulator/SimulatorMessages.h>
 
 HologramCombatManager::HologramCombatManager()
 {
