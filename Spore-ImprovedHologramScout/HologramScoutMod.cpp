@@ -2,6 +2,7 @@
 #include "HologramScoutMod.h"
 #include <Spore/Simulator/cCreatureGameData.h>
 #include "HologramCombatManager.h"
+#include <Spore/UI/SimulatorRollovers.h>
 
 HologramScoutMod* HologramScoutMod::sInstance;
 byte HologramScoutMod::RenderToUse;
@@ -135,7 +136,7 @@ void HologramScoutMod::Update()
 			if (comb != nullptr && comb != object_cast<Simulator::cCombatant>(avatar))
 			{
 				//Check if the terrain intersects with it.
-				if (PlanetModel.mpTerrain->Raycast(cameraPosition, (comb->ToSpatialObject()->mPosition - cameraPosition).Normalized()) == Vector3(0, 0, 0))
+				if (true)//(PlanetModel.mpTerrain->Raycast(cameraPosition, (comb->ToSpatialObject()->mPosition - cameraPosition).Normalized()) == Vector3(0, 0, 0))
 				{
 					//SporeDebugPrint("raycasted!");
 
@@ -151,7 +152,13 @@ void HologramScoutMod::Update()
 						}
 						mpHoveredCombatant = comb;
 
-						auto transform = CameraManager.GetViewer()->GetCamera()->transform;
+						if (object_cast<Simulator::cCreatureBase>(mpHoveredCombatant))
+						{
+							UI::SimulatorRollover::ShowRollover(mpHoveredCombatant->ToGameData());
+
+							//rollover->mpLayout->LoadByID(id("Rollover_CreatureSPG"));
+						}
+
 						
 					}
 				}

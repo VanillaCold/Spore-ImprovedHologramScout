@@ -12,6 +12,7 @@ ci_diplo_citywalls_large_02
 ci_diplo_citywalls_large_03
 special
 TargetHealthbar
+Rollover_CreatureSPG
 spacegame_tools
 CrtEnergyBar
 CrtBaseAbilities

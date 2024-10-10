@@ -36,6 +36,16 @@ void Dispose()
 	// This method is called when the game is closing
 }
 
+static_detour(RolloverDetour, UI::SimulatorRollover* (int*, UI::SimulatorRolloverID, Simulator::cObjectPoolIndex))
+{
+	UI::SimulatorRollover* detoured(int* gamedata, UI::SimulatorRolloverID rolloverID, Simulator::cObjectPoolIndex unk)
+	{
+		SporeDebugPrint("%x, %x, %x", gamedata, rolloverID, unk);
+		return original_function(gamedata, rolloverID, unk);
+	}
+};
+
+
 void AttachDetours()
 {
 	Chocice75_ImprovedHologramScout_OnUseDetour::attach(GetAddress(cGetOutOfUFOToolStrategy, OnSelect));
@@ -46,6 +56,8 @@ void AttachDetours()
 	HologramAudioDetour::attach(GetAddress(Audio,PlayProceduralAudio));
 	OverrideCreatureDamageDetour::attach(Address(ModAPI::ChooseAddress(0x00bfc500, 0x00bfcf10)));
 	PlayAbilityDetour::attach(GetAddress(Simulator::cCreatureBase, PlayAbility));
+
+	RolloverDetour::attach(GetAddress(UI::SimulatorRollover, ShowRollover));
 	// Call the attach() method on any detours you want to add
 	// For example: cViewer_SetRenderType_detour::attach(GetAddress(cViewer, SetRenderType));
 }
