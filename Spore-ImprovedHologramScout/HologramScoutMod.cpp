@@ -108,75 +108,14 @@ void HologramScoutMod::Update()
 		App::GetViewer()->GetCameraToMouse(cameraPosition, mouseDir);
 
 
-		//and also get the view direction.
-		auto viewDir = CameraManager.GetViewer()->GetViewTransform().GetRotation().Row(1);
-		//Initialize a vector of spaital objects
-		vector<cSpatialObjectPtr> objects;
-
-		//Raycast to find all items in the view.
-		if (GameViewManager.RaycastAll(cameraPosition, cameraPosition + mouseDir * 1000.0f, objects, true))
+		auto hover = GameViewManager.GetHoveredObject();
+		auto combatant = object_cast<Simulator::cCombatant>(hover);
+		if (combatant != nullptr)
 		{
-			cCombatantPtr comb;
-			//For each, check if it's a combatant.
-			for each (cSpatialObjectPtr obj in objects)
-			{
-				if (object_cast<Simulator::cCombatant>(obj)
-					&&
-						(object_cast<Simulator::cGamePlant>(obj) || object_cast<Simulator::cCreatureBase>(obj) || object_cast<Simulator::cBuilding>(obj)
-							|| object_cast<Simulator::cTurret>(obj) || object_cast<Simulator::cVehicle>(obj) || object_cast<Simulator::cGameDataUFO>(obj)))
-				{
+			mpHoveredCombatant = combatant;
+			combatant->ToSpatialObject()->SetIsRolledOver(true);
 
-					//if it is, then set comb to be the object and then break from the foreach loop.
-					comb = object_cast<Simulator::cCombatant>(obj);
-					break;
-				}
-			}
-
-			//If the combatant is neither null nor the player avatar,
-			if (comb != nullptr && comb != object_cast<Simulator::cCombatant>(avatar))
-			{
-				//Check if the terrain intersects with it.
-				if (true)//(PlanetModel.mpTerrain->Raycast(cameraPosition, (comb->ToSpatialObject()->mPosition - cameraPosition).Normalized()) == Vector3(0, 0, 0))
-				{
-					//SporeDebugPrint("raycasted!");
-
-					//SporeDebugPrint("%f, %f", comb->mHealthPoints, comb->mMaxHealthPoints);
-					//If the hovered combatant isn't the same as the one just found,
-					if (mpHoveredCombatant != comb)
-					{
-						//set the hovered combatant to not be hovered, and set the new one to be the hovered combatant.
-						comb->ToSpatialObject()->SetIsRolledOver(true);
-						if (mpHoveredCombatant)
-						{
-							mpHoveredCombatant->ToSpatialObject()->SetIsRolledOver(false);
-						}
-						mpHoveredCombatant = comb;
-
-						if (object_cast<Simulator::cCreatureBase>(mpHoveredCombatant))
-						{
-							UI::SimulatorRollover::ShowRollover(mpHoveredCombatant->ToGameData());
-
-							//rollover->mpLayout->LoadByID(id("Rollover_CreatureSPG"));
-						}
-
-						
-					}
-				}
-				else //if the terrain intersects, set the hovered combatant to nullptr.
-				{
-					comb = nullptr;
-					mpHoveredCombatant = nullptr;
-				}
-			}
-			else
-			{
-				//If it's not null, but it should no longer be hoveed,
-				if (mpHoveredCombatant != nullptr)
-				{
-					//set it to not be hovered.
-					mpHoveredCombatant->ToSpatialObject()->SetIsRolledOver(false);
-				}
-			}
+			UI::SimulatorRollover::ShowRollover(hover);
 		}
 		
 		if (delayedAbility)
