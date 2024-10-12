@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<mod causesSaveDataDependency="true" description="A mod for Spore that adds an improved version of the Hologram Scout mod. " displayName="Spore-ImprovedHologramScout" dllsBuild="$SPOREMOD_DLLS_BUILD" githubUrl="https://github.com/VanillaCold/Spore-ImprovedHologramScout" hasCustomInstaller="false" installerSystemVersion="1.0.1.2" isExperimental="true" unique="Spore-ImprovedHologramScout" websiteUrl="https://github.com/VanillaCold/Spore-ImprovedHologramScout">
+  <prerequisite game="GalacticAdventures">!!!Chocice75_BetterHologramScout.package</prerequisite>
+  <prerequisite>Spore-ImprovedHologramScout.dll</prerequisite>
+</mod>
