@@ -14,8 +14,6 @@
 
 using namespace Simulator;
 
-
-
 void Initialize()
 {
 	// This method is executed when the game starts, before the user interface is shown
@@ -28,6 +26,8 @@ void Initialize()
 	CheatManager.AddCheat("SpawnAvatar", new SpawnAvatarCheat());
 
 	App::AddUpdateFunction(new HologramScoutMod());
+
+	//UTFWin::UILayout::LoadByID();
 	new HologramCombatManager();
 }
 
@@ -40,8 +40,20 @@ static_detour(RolloverDetour, UI::SimulatorRollover* (int*, UI::SimulatorRollove
 {
 	UI::SimulatorRollover* detoured(int* gamedata, UI::SimulatorRolloverID rolloverID, Simulator::cObjectPoolIndex unk)
 	{
-		SporeDebugPrint("%x, %x, %x", gamedata, rolloverID, unk);
+		//SporeDebugPrint("%x, %x, %x", gamedata, rolloverID, unk);
 		return original_function(gamedata, rolloverID, unk);
+	}
+};
+
+member_detour(RolloverUIDetour, UTFWin::UILayout, bool(ResourceKey&, bool, uint32_t))
+{
+	bool detoured(ResourceKey& resourceKey, bool unk, uint32_t param)
+	{
+		if (resourceKey.instanceID == id("Rollover_Creature") && Simulator::IsSpaceGame())
+		{
+			resourceKey.instanceID = id("Rollover_CreatureSPG");
+		}
+		return original_function(this, resourceKey, unk, param);
 	}
 };
 
@@ -57,7 +69,8 @@ void AttachDetours()
 	OverrideCreatureDamageDetour::attach(Address(ModAPI::ChooseAddress(0x00bfc500, 0x00bfcf10)));
 	PlayAbilityDetour::attach(GetAddress(Simulator::cCreatureBase, PlayAbility));
 
-	RolloverDetour::attach(GetAddress(UI::SimulatorRollover, ShowRollover));
+	//RolloverDetour::attach(GetAddress(UI::SimulatorRollover, ShowRollover));
+	RolloverUIDetour::attach(GetAddress(UTFWin::UILayout, Load));
 	// Call the attach() method on any detours you want to add
 	// For example: cViewer_SetRenderType_detour::attach(GetAddress(cViewer, SetRenderType));
 }

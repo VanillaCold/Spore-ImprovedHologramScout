@@ -116,6 +116,9 @@ void HologramScoutMod::Update()
 			combatant->ToSpatialObject()->SetIsRolledOver(true);
 
 			UI::SimulatorRollover::ShowRollover(hover);
+			
+
+			//auto wind = WindowManager.GetMainWindow()->FindWindowByID(0x04B47745);
 		}
 		
 		if (delayedAbility)

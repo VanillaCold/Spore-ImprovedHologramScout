@@ -15,6 +15,23 @@ SpawnAvatarCheat::~SpawnAvatarCheat()
 
 void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 {
+	if (line.HasFlag("b"))
+	{
+		auto hover = GameViewManager.GetHoveredObject();
+		auto plant = object_cast<Simulator::cGamePlant>(hover);
+
+		uint32_t classType = 0;
+		if (hover != nullptr)
+		{
+			classType = hover->GetNounID();
+		}
+
+		SporeDebugPrint("plant flag! %b", GamePlantManager.field_20 & 1);
+
+		SporeDebugPrint("hover? %b\nplant? %b\nclass noun ID: 0x%x", hover != nullptr, plant != nullptr, classType);
+		return;
+	}
+
 
 	if (line.HasFlag("a"))
 	{
