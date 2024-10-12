@@ -43,8 +43,8 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 	auto creaturebase = object_cast<Simulator::cCreatureBase>(avatar);
 
 
-	auto prof = avatar->mpSpeciesProfile;
-	SporeDebugPrint("%i", prof->field_510);
+	//auto prof = avatar->mpSpeciesProfile;
+	//SporeDebugPrint("%i", prof->field_510);
 
 	avatar->mbKeepPinnedToPlanet = 0;
 	//avatar->mbTeleport = 1;
