@@ -4,7 +4,7 @@
 
 bool Chocice75_ImprovedHologramScout_OnUseDetour::DETOUR(cSpaceToolData* pTool)
 {
-	if (Simulator::GetPlayerEmpire() && GetPlayerEmpire()->GetSpeciesProfile() && GetPlayerEmpire()->GetSpeciesProfile()->mSpeciesKey != ResourceKey(0, 0, 0))
+	if (Simulator::GetPlayerEmpire() && GetPlayerEmpire()->GetSpeciesProfile())
 	{
 
 		bool isSpecial = false;
