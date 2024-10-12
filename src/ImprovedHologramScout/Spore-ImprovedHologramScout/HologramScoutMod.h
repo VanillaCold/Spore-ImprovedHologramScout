@@ -11,6 +11,7 @@ class HologramScoutMod
 {
 protected:
 	static HologramScoutMod* sInstance;
+	Simulator::cGonzagoTimer deltaTimer;
 
 	bool mbPressedSpace;
 	bool mbPressedTab;

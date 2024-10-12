@@ -4,6 +4,8 @@
 #include "HologramCombatManager.h"
 #include <Spore/UI/SimulatorRollovers.h>
 
+#include <Spore/App/GameSpace.h>
+
 HologramScoutMod* HologramScoutMod::sInstance;
 byte HologramScoutMod::RenderToUse;
 
@@ -16,6 +18,8 @@ HologramScoutMod::HologramScoutMod()
 	isSpecial = 0;
 	wasActive = 0;
 	mbPressedSpace = 0;
+	deltaTimer = Simulator::cGonzagoTimer();
+	deltaTimer.Start();
 }
 
 
@@ -63,6 +67,8 @@ void HologramScoutMod::InitialiseAbilities(bool isSpecial = false)
 
 void HologramScoutMod::Update()
 {
+	auto deltatime = deltaTimer.GetElapsed().LowPart;
+	deltaTimer.Stop();
 	if (Simulator::IsSpaceGame() && GameNounManager.GetAvatar())
 	{
 		wasActive = 1;
@@ -92,14 +98,19 @@ void HologramScoutMod::Update()
 				}
 			}
 		}
-
 		//SporeDebugPrint("%x, %x", avatar->mpSpeciesProfile->mHealthRecoveryRate, avatar->mpSpeciesProfile->mEnergyRecoveryRate);
+		
+		auto mode = (App::GameSpace*)GameModeManager.GetActiveMode();
+		
+		float time = GameTimeManager.ConvertDeltaTime(deltatime) / 1000.0f;
 
-		//avatar->mEnergy += avatar->mpSpeciesProfile->mEnergyRecoveryRate;
-		//avatar->mHealthPoints += avatar->mpSpeciesProfile->mHealthRecoveryRate;
+		//SporeDebugPrint("%f", time);
+		
+		avatar->mEnergy += avatar->mpSpeciesProfile->mEnergyRecoveryRate * time;
+		avatar->mHealthPoints += avatar->mpSpeciesProfile->mHealthRecoveryRate * time;
 
-		//avatar->mEnergy = clamp(0.0f, avatar->mEnergy, avatar->mMaxEnergy);
-		//avatar->mHealthPoints = clamp(0.0f, avatar->mHealthPoints, mMaxPlayerHealth);
+		avatar->mEnergy = clamp(0.0f, avatar->mEnergy, avatar->mMaxEnergy);
+		avatar->mHealthPoints = clamp(0.0f, avatar->mHealthPoints, mMaxPlayerHealth);
 		avatar->mMaxHealthPoints = mMaxPlayerHealth;
 
 		//Selection code
@@ -186,6 +197,9 @@ void HologramScoutMod::Update()
 		}
 		mpLayout = nullptr;
 	}
+
+	deltaTimer.SetTime(LARGE_INTEGER{});
+	deltaTimer.Start();
 }
 
 
