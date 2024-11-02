@@ -15,6 +15,14 @@ SpawnAvatarCheat::~SpawnAvatarCheat()
 
 void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 {
+	if (line.HasFlag("c"))
+	{
+		float a = 9999.0;
+		uint32_t& b = (uint32_t&)a;
+		SporeDebugPrint("0x%X", b);
+		return;
+	}
+
 	if (line.HasFlag("b"))
 	{
 		auto hover = GameViewManager.GetHoveredObject();

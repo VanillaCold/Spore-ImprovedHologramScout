@@ -29,12 +29,12 @@ bool Chocice75_ImprovedHologramScout_OnUseDetour::DETOUR(cSpaceToolData* pTool)
 		//GetPlayerEmpire()->mCaptainKey = captain;
 		cCreatureAnimalPtr avatar = GameNounManager.GetAvatar();
 
-		HologramScoutMod::Get()->OpenUI(isSpecial);
 		avatar->SetCurrentBrainLevel(5);
 		avatar->mMaxHealthPoints = max(avatar->mHealthPoints, avatar->mMaxHealthPoints);
 		avatar->SetScale(1.5f);
 
 		HologramScoutMod::Get()->InitialiseAbilities(isSpecial);
+		HologramScoutMod::Get()->OpenUI(isSpecial);
 		avatar->SetPoliticalID(Simulator::GetPlayerEmpire()->mPoliticalID);
 
 		if (result && avatar && isSpecial)

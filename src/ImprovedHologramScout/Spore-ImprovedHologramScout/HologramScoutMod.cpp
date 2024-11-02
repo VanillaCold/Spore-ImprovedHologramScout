@@ -3,6 +3,7 @@
 #include <Spore/Simulator/cCreatureGameData.h>
 #include "HologramCombatManager.h"
 #include <Spore/UI/SimulatorRollovers.h>
+#include "ButtonWinProc.h"
 
 #include <Spore/App/GameSpace.h>
 
@@ -308,6 +309,9 @@ void HologramScoutMod::GetPlayerInput(cCreatureBasePtr avatar)
 
 void HologramScoutMod::OpenUI(bool useAbilities)
 {
+	auto avatar = GameNounManager.GetAvatar();
+
+
 	if (mpLayout == nullptr)
 	{
 		mpLayout = new UTFWin::UILayout();
@@ -324,9 +328,59 @@ void HologramScoutMod::OpenUI(bool useAbilities)
 		mpLayout->FindWindowByID(id("CrtBaseAbilities"))->SetVisible(false);
 		mpLayout->FindWindowByID(id("InfHealthDisplay"))->SetVisible(true);
 	}
-	auto avatar = GameNounManager.GetAvatar();
-	auto imageKey = ResourceKey(avatar->mSpeciesKey.instanceID, TypeIDs::png, avatar->mSpeciesKey.groupID);
 
+	//setup the buttons
+	//0x01012020 is the first one
+
+	for (int i = 0; i < 4; i++)
+	{
+		auto button = mpLayout->FindWindowByID(0x01012020 + i);
+		if (mpCombatSkills.find(i) != mpCombatSkills.end())
+		{
+			button->SetVisible(true);
+			auto window = new UTFWin::Window();
+
+			window->SetControlID(0x0);
+			//window->SetFillColor(Color::WHITE);
+			//window->SetShadeColor(Color::WHITE);
+
+			button->AddWindow(window);
+
+
+			auto& skill = mpCombatSkills[i];
+			ResourceKey imgKey = ResourceKey(skill->mVerbIconImageID, TypeIDs::png, id("HoloAbilityIcons"));
+			
+			UTFWin::ImageDrawable* imageDrawable = new UTFWin::ImageDrawable();
+			//window->SetVisible(false);
+			window->SetDrawable(imageDrawable);
+
+			window->FitParentArea(window);
+
+			auto& area = window->GetArea();
+			SporeDebugPrint("%f, %f, %f, %f", area.x1, area.y1, area.x2, area.y2);
+
+			window->SetArea(Math::Rectangle(8, 8, 28, 28));
+			
+
+			UTFWin::ImageDrawable::SetImageForWindow(window,imgKey);
+
+			window->SetVisible(true);
+			window->SetFlag(UTFWin::WindowFlags::kWinFlagIgnoreMouse, true);
+
+			
+			for (byte j = 0; j < avatar->GetAbilitiesCount(); j++)
+			{
+				if (mpCombatSkills[i] == avatar->GetAbility(j))
+				{
+					button->AddWinProc(new ButtonWinProc(j));
+					break;
+				}
+			}
+
+		}
+	}
+
+	auto imageKey = ResourceKey(avatar->mSpeciesKey.instanceID, TypeIDs::png, avatar->mSpeciesKey.groupID);
 	auto imageDraw = new UTFWin::ImageDrawable();
 	ImagePtr image;
 	UTFWin::Image::GetImage(imageKey, image);
@@ -343,6 +397,10 @@ void HologramScoutMod::UpdateUI()
 	{
 		specialAbilitySlots->FindWindowByID(id("ScanPanel"))->SetVisible(!mbAbilityMode);
 		specialAbilitySlots->FindWindowByID(id("CombatPanel"))->SetVisible(mbAbilityMode);
+
+		object_cast<UTFWin::IButton>(specialAbilitySlots->FindWindowByID(id("CombatButton")))->SetButtonStateFlag(4, mbAbilityMode);
+		object_cast<UTFWin::IButton>(specialAbilitySlots->FindWindowByID(id("ScanButton")))->SetButtonStateFlag(4, !mbAbilityMode);
+
 	}
 
 	// Update stats UI.
@@ -535,6 +593,40 @@ void HologramScoutMod::TriggerSkill(Simulator::cCreatureAbility* ability)
 	{
 		delayedAbility = nullptr;
 	}
+}
+
+bool HologramScoutMod::CanUse(byte abilityIndex)
+{
+	auto avatar = GameNounManager.GetAvatar();
+	auto ability = avatar->GetAbility(abilityIndex);
+
+	if (!avatar->mpCombatantTarget)
+	{
+		return false;
+	}
+
+	auto distance = Math::distance(avatar->mPosition, avatar->mpCombatantTarget->ToSpatialObject()->mPosition);
+	//SporeDebugPrint("distance is %f, range is %f", distance, ability->mRange);
+	if (floor(distance) > ability->mRange && distance > ability->mRushingRange)
+	{
+		return false;
+	}
+	if (ceil(distance) < ability->mAvatarRangeMin)
+	{
+		return false;
+	}
+
+	if (ability->mEnergyCost > avatar->mEnergy)
+	{
+		return false;
+	}
+
+	if (avatar->mRechargingAbilityBits[abilityIndex])
+	{
+		return false;
+	}
+
+	return true;
 }
 
 

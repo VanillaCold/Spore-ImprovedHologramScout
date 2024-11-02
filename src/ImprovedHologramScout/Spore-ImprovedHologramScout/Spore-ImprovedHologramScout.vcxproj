@@ -98,6 +98,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ButtonWinProc.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="HologramCombatManager.h">
       <SubType>
       </SubType>
@@ -115,6 +119,10 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ButtonWinProc.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="CombatantDetours.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>

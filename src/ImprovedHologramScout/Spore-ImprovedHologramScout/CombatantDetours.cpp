@@ -42,7 +42,26 @@ int OverrideCreatureDamageDetour::DETOUR(float damage, uint32_t attackerPolitica
 		else if (GameNounManager.GetAvatar() && int(damage) == 9999)
 		{
 			//just pickup the last creature - assume it's caused by that.
-			auto crt = HologramCombatManager::Get()->mpLastCreatureToAttack;
+			cCreatureBasePtr crt = HologramCombatManager::Get()->mpLastCreatureToAttack;
+
+			if (attackerPoliticalID == GameNounManager.GetAvatar()->mPoliticalID)
+			{
+				crt = GameNounManager.GetAvatar();
+			}
+
+			if (crt.get() == this)
+			{
+				//This code runs if the last creature to attack is the one being targetted.
+				//If there is one, assume that this combatant's target is the attacker.
+				crt = object_cast<Simulator::cCreatureBase>(this->mpCombatantTarget);
+
+				if (!crt)
+				{
+					//However, if there is no target, assume it's caused by the avatar.
+					//it just makes sense in this case.
+					crt = GameNounManager.GetAvatar();
+				}
+			}
 			if (crt)
 			{
 				//get the new ability
@@ -51,6 +70,11 @@ int OverrideCreatureDamageDetour::DETOUR(float damage, uint32_t attackerPolitica
 				{
 					damage = ability->mDamage;
 				}
+			}
+			else
+			{
+				//Just... assume the damage is something like 10.
+				damage = 10;
 			}
 		}
 	}

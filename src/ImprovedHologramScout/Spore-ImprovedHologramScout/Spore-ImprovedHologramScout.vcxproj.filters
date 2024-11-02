@@ -31,6 +31,9 @@
     <ClInclude Include="HologramCombatManager.h">
       <Filter>Spore-ImprovedHologramScout</Filter>
     </ClInclude>
+    <ClInclude Include="ButtonWinProc.h">
+      <Filter>Spore-ImprovedHologramScout</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -55,6 +58,9 @@
       <Filter>Spore-ImprovedHologramScout</Filter>
     </ClCompile>
     <ClCompile Include="HologramCombatManager.cpp">
+      <Filter>Spore-ImprovedHologramScout</Filter>
+    </ClCompile>
+    <ClCompile Include="ButtonWinProc.cpp">
       <Filter>Spore-ImprovedHologramScout</Filter>
     </ClCompile>
   </ItemGroup>

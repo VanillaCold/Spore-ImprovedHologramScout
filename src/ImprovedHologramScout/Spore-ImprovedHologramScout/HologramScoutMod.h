@@ -42,6 +42,7 @@ public:
 	int Release() override;
 
 	void TriggerSkill(Simulator::cCreatureAbility* ability);
+	bool CanUse(byte abilityIndex);
 
 	void OpenUI(bool showAbilities);
 	void UpdateUI();

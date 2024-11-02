@@ -36,15 +36,6 @@ void Dispose()
 	// This method is called when the game is closing
 }
 
-static_detour(RolloverDetour, UI::SimulatorRollover* (int*, UI::SimulatorRolloverID, Simulator::cObjectPoolIndex))
-{
-	UI::SimulatorRollover* detoured(int* gamedata, UI::SimulatorRolloverID rolloverID, Simulator::cObjectPoolIndex unk)
-	{
-		//SporeDebugPrint("%x, %x, %x", gamedata, rolloverID, unk);
-		return original_function(gamedata, rolloverID, unk);
-	}
-};
-
 member_detour(RolloverUIDetour, UTFWin::UILayout, bool(ResourceKey&, bool, uint32_t))
 {
 	bool detoured(ResourceKey& resourceKey, bool unk, uint32_t param)
