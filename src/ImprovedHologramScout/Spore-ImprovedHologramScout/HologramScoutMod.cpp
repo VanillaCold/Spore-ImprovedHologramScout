@@ -103,8 +103,8 @@ void HologramScoutMod::Update()
 			{
 				if (creature != avatar)
 				{
-					creature->SetScale(creature->mScale * 0.25f);
-					creature->mScale /= (0.25f);
+					creature->SetScale(creature->mScale * 0.5f);
+					creature->mScale /= (0.5f);
 
 					auto combatManager = HologramCombatManager::Get();
 					if (combatManager->mpMaxHealthPoints.find(creature.get()) == combatManager->mpMaxHealthPoints.end())
@@ -394,6 +394,43 @@ void HologramScoutMod::OpenUI(bool useAbilities)
 					{
 						tooltip = mpCombatSkills[i]->nName.GetText();
 					}
+					button->AddWinProc(UTFWin::CreateTooltip(tooltip.c_str()));
+					break;
+				}
+			}
+
+		}
+	}
+
+	//Now just do the same for the other abilities.
+	for (int i = 0; i < 4; i++)
+	{
+		auto button = mpLayout->FindWindowByID(0x01012010 + i);
+		if (mpScanAbilities.find(i) != mpScanAbilities.end())
+		{
+			button->SetVisible(true);
+			auto window = new UTFWin::Window();
+
+			window->SetControlID(0x0);
+			button->AddWindow(window);
+
+			auto& skill = mpScanAbilities[i];
+			ResourceKey imgKey = ResourceKey(skill->mVerbIconImageID, TypeIDs::png, id("HoloAbilityIcons"));
+
+			UTFWin::ImageDrawable* imageDrawable = new UTFWin::ImageDrawable();
+			window->SetDrawable(imageDrawable);
+			window->SetArea(Math::Rectangle(8, 8, 28, 28));
+			UTFWin::ImageDrawable::SetImageForWindow(window, imgKey);
+
+			window->SetVisible(true);
+			window->SetFlag(UTFWin::WindowFlags::kWinFlagIgnoreMouse, true);
+
+			for (byte j = 0; j < avatar->GetAbilitiesCount(); j++)
+			{
+				if (mpScanAbilities[i] == avatar->GetAbility(j))
+				{
+					button->AddWinProc(new ButtonWinProc(j));
+					string16 tooltip = mpScanAbilities[i]->nName.GetText();
 					button->AddWinProc(UTFWin::CreateTooltip(tooltip.c_str()));
 					break;
 				}

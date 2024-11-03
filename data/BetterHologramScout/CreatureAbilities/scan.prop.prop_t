@@ -1,0 +1,22 @@
+string16 description "Scan"
+uint32s creatureAbilityAnimationIDs
+	0x03fa5e4d
+end
+int32 creatureAbilityCategory 1
+float creatureAbilityDamage 0
+float creatureAbilityEffectDuration 0
+int32 creatureAbilityEffectKind 1
+int32 creatureAbilityEffectType 0
+uint32 creatureAbilityImpactEffectId hash(SG_ufo_handheld_scan_HitCombatant)
+uint32 creatureAbilityMuzzleEffectId hash(SG_ufo_handheld_scan_muzzle)
+texts creatureAbilityName
+	(Abilities!0x000000b5) "Scan (PLACEHOLDER)"
+end
+int32 creatureAbilityNoRequirements 1
+float creatureAbilityRange 100
+float creatureAbilityRefresh 5
+float creatureAbilitySpeed 10
+uint32 creatureAbilityTrailEffectId hash(SG_ufo_handheld_scan_beam)
+int32 creatureAbilityType 29
+bool verbIconUseDescription false
+key verbIconImageID scan_scan

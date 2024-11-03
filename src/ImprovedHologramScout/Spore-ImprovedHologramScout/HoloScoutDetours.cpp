@@ -31,7 +31,7 @@ bool Chocice75_ImprovedHologramScout_OnUseDetour::DETOUR(cSpaceToolData* pTool)
 
 		avatar->SetCurrentBrainLevel(5);
 		avatar->mMaxHealthPoints = max(avatar->mHealthPoints, avatar->mMaxHealthPoints);
-		avatar->SetScale(1.5f);
+		avatar->SetScale(2.0f);
 
 		HologramScoutMod::Get()->InitialiseAbilities(isSpecial);
 		HologramScoutMod::Get()->OpenUI(isSpecial);
