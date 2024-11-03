@@ -76,6 +76,10 @@ bool ButtonWinProc::HandleUIMessage(IWindow* window, const Message& message)
 		{
 			button->SetButtonStateFlag(4, true);
 		}
+
+		auto val = 255 * !(button->GetButtonStateFlags() & 4);
+		if (window->FindWindowByID(0x0))
+			window->FindWindowByID(0x0)->SetShadeColor(Math::Color(val, val, val, 240));
 	}
 
 

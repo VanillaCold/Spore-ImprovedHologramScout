@@ -372,6 +372,8 @@ void HologramScoutMod::OpenUI(bool useAbilities)
 			
 			UTFWin::ImageDrawable* imageDrawable = new UTFWin::ImageDrawable();
 			window->SetDrawable(imageDrawable);
+			window->SetShadeColor(Math::Color(255, 255, 255, 240));
+
 			window->SetArea(Math::Rectangle(8, 8, 28, 28));
 			UTFWin::ImageDrawable::SetImageForWindow(window,imgKey);
 
