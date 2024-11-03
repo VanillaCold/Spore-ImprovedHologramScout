@@ -26,8 +26,10 @@ Rollover_CreatureSPG
 spacegame_tools
 CrtEnergyBar
 CrtBaseAbilities
+PoisonBlade
 MissileLaunch
 CrtLowHealth
+MindMeld
 ScanPanel
 cr_egg_10_base
 city_walls_religious_large_03
@@ -146,8 +148,10 @@ city_walls_military_large_03
 city_walls_military_large_02
 mv_sneak
 CrtHealthText
+summonswarm
 cr_egg_04_base
 CRG_Part_Unlock_Skeleton4
+freeze
 CombatButton
 CRG_Part_Unlock_Skeleton3
 CRG_Part_Unlock_Skeleton2

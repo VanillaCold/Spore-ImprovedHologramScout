@@ -46,6 +46,11 @@ int ButtonWinProc::GetEventFlags() const
 // checking what kind of message was sent...
 bool ButtonWinProc::HandleUIMessage(IWindow* window, const Message& message)
 {
+	if (!GameNounManager.GetAvatar())
+	{
+		return false;
+	}
+
 	auto ability = GameNounManager.GetAvatar()->GetAbility(attkID);
 
 	if (message.IsType(MessageType::kMsgButtonSelect))

@@ -36,6 +36,25 @@ HologramScoutMod* HologramScoutMod::Get()
 void HologramScoutMod::InitialiseAbilities(bool isSpecial = false)
 {
 	auto avatar = GameNounManager.GetAvatar();
+
+	for (int i = 0; i < mpCombatSkills.size(); i++)
+	{
+		if (mpCombatSkills[i])
+		{
+			delete mpCombatSkills[i];
+		}
+	}
+
+	for (int i = 0; i < mpScanAbilities.size(); i++)
+	{
+		if (mpScanAbilities[i])
+		{
+			delete mpScanAbilities[i];
+		}
+	}
+	mpCombatSkills = map<byte, Simulator::cCreatureAbility*>();
+	mpScanAbilities = map<byte, Simulator::cCreatureAbility*>();
+
 	if (Simulator::IsSpaceGame() && avatar)
 	{
 		for (int i = 0; i < avatar->GetAbilitiesCount(); i++)
@@ -486,7 +505,24 @@ void HologramScoutMod::UpdateUI()
 
 void HologramScoutMod::CloseUI()
 {
+	auto container = mpLayout->GetContainerWindow();
+	
+	container->DisposeAllWindowFamilies();
+
+	//auto special = mpLayout->FindWindowByID(id("CrtSpecialAbilities"));
+	//auto baseab = mpLayout->FindWindowByID(id("CrtBaseAbilities"));
+	//auto target = mpLayout->FindWindowByID(id("TargetCreatureUI"));
+	//auto crtclp = mpLayout->FindWindowByID(id("CreatureClip"));
+	//auto bottom = mpLayout->FindWindowByID(id("BottomBar"));
+	//container->DisposeWindowFamily(special);
+	//container->DisposeWindowFamily(baseab);
+	//container->DisposeWindowFamily(target);
+	//container->DisposeWindowFamily(bottom);
+	//container->DisposeWindowFamily(crtclp);
+
+	
 	mpLayout = nullptr;
+	
 	WindowManager.GetMainWindow()->FindWindowByID(0x065E40F0)->GetParent()->SetVisible(true);
 }
 
@@ -582,6 +618,8 @@ void HologramScoutMod::TriggerSkill(Simulator::cCreatureAbility* ability)
 		}
 		if (index != -1)
 		{
+			delayedAbility = nullptr;
+			avatar->StopMovement();
 			avatar->PlayAbility(index);
 		}
 		else
