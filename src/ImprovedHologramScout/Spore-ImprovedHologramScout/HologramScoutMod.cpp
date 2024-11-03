@@ -4,6 +4,7 @@
 #include "HologramCombatManager.h"
 #include <Spore/UI/SimulatorRollovers.h>
 #include "ButtonWinProc.h"
+#include "SwitchWinProc.h"
 
 #include <Spore/App/GameSpace.h>
 
@@ -341,6 +342,9 @@ void HologramScoutMod::OpenUI(bool useAbilities)
 	mpLayout->SetVisible(true);
 	mpLayout->GetContainerWindow()->AddWinProc(new UTFWin::SimpleLayout());
 	mpLayout->GetContainerWindow()->SendToBack(mpLayout->GetContainerWindow());
+
+	mpLayout->FindWindowByID(id("ScanButton"))->AddWinProc(new SwitchWinProc(0));
+	mpLayout->FindWindowByID(id("CombatButton"))->AddWinProc(new SwitchWinProc(1));
 	
 	if (!useAbilities)
 	{

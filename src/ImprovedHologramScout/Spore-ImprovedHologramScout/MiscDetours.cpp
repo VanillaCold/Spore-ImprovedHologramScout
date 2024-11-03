@@ -3,13 +3,13 @@
 
 void HologramAudioDetour::DETOUR(uint32_t id, Audio::AudioTrack track, Vector3 pos)
 {
-	if (id == 0x73ecda8a && Simulator::IsSpaceGame() && !HologramScoutMod::Get()->isSpecial)
+	if (id == 0x73ecda8a && Simulator::IsSpaceGame() && HologramScoutMod::Get()->isSpecial)
 	{
-		return original_function(id, track, pos);
+		return;
 	}
 	else
 	{
-		return;
+		return original_function(id, track, pos);;
 	}
 }
 

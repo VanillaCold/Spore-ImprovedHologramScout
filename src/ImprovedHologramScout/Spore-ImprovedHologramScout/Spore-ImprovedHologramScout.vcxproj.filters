@@ -11,6 +11,15 @@
     <Filter Include="Internal">
       <UniqueIdentifier>{d62ad12d-69d8-4933-8342-03043c9adc22}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Spore-ImprovedHologramScout\WinProcs">
+      <UniqueIdentifier>{7507b488-48a0-427f-aad9-298292216993}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Spore-ImprovedHologramScout\Managers">
+      <UniqueIdentifier>{f9bf3767-2663-471a-b772-b3637adb4d64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Spore-ImprovedHologramScout\Detours">
+      <UniqueIdentifier>{993d24c0-cccc-494d-913d-4dc17499678e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -22,17 +31,20 @@
     <ClInclude Include="SpawnAvatarCheat.h">
       <Filter>Spore-ImprovedHologramScout</Filter>
     </ClInclude>
-    <ClInclude Include="HologramScoutMod.h">
-      <Filter>Spore-ImprovedHologramScout</Filter>
+    <ClInclude Include="ButtonWinProc.h">
+      <Filter>Spore-ImprovedHologramScout\WinProcs</Filter>
     </ClInclude>
-    <ClInclude Include="Detours.h">
-      <Filter>Spore-ImprovedHologramScout</Filter>
+    <ClInclude Include="SwitchWinProc.h">
+      <Filter>Spore-ImprovedHologramScout\WinProcs</Filter>
     </ClInclude>
     <ClInclude Include="HologramCombatManager.h">
-      <Filter>Spore-ImprovedHologramScout</Filter>
+      <Filter>Spore-ImprovedHologramScout\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="ButtonWinProc.h">
-      <Filter>Spore-ImprovedHologramScout</Filter>
+    <ClInclude Include="HologramScoutMod.h">
+      <Filter>Spore-ImprovedHologramScout\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Detours.h">
+      <Filter>Spore-ImprovedHologramScout\Detours</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -45,23 +57,26 @@
     <ClCompile Include="SpawnAvatarCheat.cpp">
       <Filter>Spore-ImprovedHologramScout</Filter>
     </ClCompile>
-    <ClCompile Include="HologramScoutMod.cpp">
-      <Filter>Spore-ImprovedHologramScout</Filter>
+    <ClCompile Include="ButtonWinProc.cpp">
+      <Filter>Spore-ImprovedHologramScout\WinProcs</Filter>
     </ClCompile>
-    <ClCompile Include="HoloScoutDetours.cpp">
-      <Filter>Spore-ImprovedHologramScout</Filter>
-    </ClCompile>
-    <ClCompile Include="CombatantDetours.cpp">
-      <Filter>Spore-ImprovedHologramScout</Filter>
-    </ClCompile>
-    <ClCompile Include="MiscDetours.cpp">
-      <Filter>Spore-ImprovedHologramScout</Filter>
+    <ClCompile Include="SwitchWinProc.cpp">
+      <Filter>Spore-ImprovedHologramScout\WinProcs</Filter>
     </ClCompile>
     <ClCompile Include="HologramCombatManager.cpp">
-      <Filter>Spore-ImprovedHologramScout</Filter>
+      <Filter>Spore-ImprovedHologramScout\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="ButtonWinProc.cpp">
-      <Filter>Spore-ImprovedHologramScout</Filter>
+    <ClCompile Include="HologramScoutMod.cpp">
+      <Filter>Spore-ImprovedHologramScout\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="MiscDetours.cpp">
+      <Filter>Spore-ImprovedHologramScout\Detours</Filter>
+    </ClCompile>
+    <ClCompile Include="HoloScoutDetours.cpp">
+      <Filter>Spore-ImprovedHologramScout\Detours</Filter>
+    </ClCompile>
+    <ClCompile Include="CombatantDetours.cpp">
+      <Filter>Spore-ImprovedHologramScout\Detours</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
