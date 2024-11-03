@@ -55,8 +55,8 @@ public:
 	Simulator::cCreatureAbility* delayedAbility;
 
 	bool mbAbilityMode;
-	map<byte, Simulator::cCreatureAbility*> mpScanAbilities;
-	map<byte, Simulator::cCreatureAbility*> mpCombatSkills;
+	map<byte, cCreatureAbilityPtr> mpScanAbilities;
+	map<byte, cCreatureAbilityPtr> mpCombatSkills;
 
 	static HologramScoutMod* Get();
 	void* Cast(uint32_t type) const override;

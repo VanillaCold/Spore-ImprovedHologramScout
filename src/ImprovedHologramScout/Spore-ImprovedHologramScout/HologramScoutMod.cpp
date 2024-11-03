@@ -38,24 +38,8 @@ void HologramScoutMod::InitialiseAbilities(bool isSpecial = false)
 {
 	auto avatar = GameNounManager.GetAvatar();
 
-	for (int i = 0; i < mpCombatSkills.size(); i++)
-	{
-		if (mpCombatSkills[i])
-		{
-			delete mpCombatSkills[i];
-		}
-	}
-
-	for (int i = 0; i < mpScanAbilities.size(); i++)
-	{
-		if (mpScanAbilities[i])
-		{
-			delete mpScanAbilities[i];
-		}
-	}
-
-	mpCombatSkills = map<byte, Simulator::cCreatureAbility*>();
-	mpScanAbilities = map<byte, Simulator::cCreatureAbility*>();
+	mpCombatSkills = map<byte, cCreatureAbilityPtr>();
+	mpScanAbilities = map<byte, cCreatureAbilityPtr>();
 
 	if (Simulator::IsSpaceGame() && avatar)
 	{
@@ -234,7 +218,7 @@ void HologramScoutMod::GetPlayerInput(cCreatureBasePtr avatar)
 	uint32_t num3 = 0x10000003;
 	uint32_t num4 = 0x10000004;
 
-	map<byte, Simulator::cCreatureAbility*> abilities = mpScanAbilities;
+	map<byte, cCreatureAbilityPtr>& abilities = mpScanAbilities;
 	if (mbAbilityMode)
 	{
 		abilities = mpCombatSkills;
@@ -244,25 +228,25 @@ void HologramScoutMod::GetPlayerInput(cCreatureBasePtr avatar)
 	{
 		auto ability = abilities.find(0);
 		if (ability != abilities.end())
-			TriggerSkill(ability.mpNode->mValue.second);
+			TriggerSkill(ability.mpNode->mValue.second.get());
 	}
 	if (GameInputManager.IsTriggered(num2))
 	{
 		auto ability = abilities.find(1);
 		if (ability != abilities.end())
-			TriggerSkill(ability.mpNode->mValue.second);
+			TriggerSkill(ability.mpNode->mValue.second.get());
 	}
 	if (GameInputManager.IsTriggered(num3))
 	{
 		auto ability = abilities.find(2);
 		if (ability != abilities.end())
-			TriggerSkill(ability.mpNode->mValue.second);
+			TriggerSkill(ability.mpNode->mValue.second.get());
 	}
 	if (GameInputManager.IsTriggered(num4))
 	{
 		auto ability = abilities.find(3);
 		if (ability != abilities.end())
-			TriggerSkill(ability.mpNode->mValue.second);
+			TriggerSkill(ability.mpNode->mValue.second.get());
 	}
 
 
@@ -330,6 +314,8 @@ void HologramScoutMod::GetPlayerInput(cCreatureBasePtr avatar)
 
 void HologramScoutMod::OpenUI(bool useAbilities)
 {
+	mbAbilityMode = 0;
+
 	auto avatar = GameNounManager.GetAvatar();
 
 
