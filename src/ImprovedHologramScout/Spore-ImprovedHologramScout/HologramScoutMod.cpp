@@ -52,6 +52,7 @@ void HologramScoutMod::InitialiseAbilities(bool isSpecial = false)
 			delete mpScanAbilities[i];
 		}
 	}
+
 	mpCombatSkills = map<byte, Simulator::cCreatureAbility*>();
 	mpScanAbilities = map<byte, Simulator::cCreatureAbility*>();
 
@@ -360,38 +361,40 @@ void HologramScoutMod::OpenUI(bool useAbilities)
 			auto window = new UTFWin::Window();
 
 			window->SetControlID(0x0);
-			//window->SetFillColor(Color::WHITE);
-			//window->SetShadeColor(Color::WHITE);
-
 			button->AddWindow(window);
-
 
 			auto& skill = mpCombatSkills[i];
 			ResourceKey imgKey = ResourceKey(skill->mVerbIconImageID, TypeIDs::png, id("HoloAbilityIcons"));
 			
 			UTFWin::ImageDrawable* imageDrawable = new UTFWin::ImageDrawable();
-			//window->SetVisible(false);
 			window->SetDrawable(imageDrawable);
-
-			window->FitParentArea(window);
-
-			auto& area = window->GetArea();
-			SporeDebugPrint("%f, %f, %f, %f", area.x1, area.y1, area.x2, area.y2);
-
 			window->SetArea(Math::Rectangle(8, 8, 28, 28));
-			
-
 			UTFWin::ImageDrawable::SetImageForWindow(window,imgKey);
 
 			window->SetVisible(true);
 			window->SetFlag(UTFWin::WindowFlags::kWinFlagIgnoreMouse, true);
 
-			
 			for (byte j = 0; j < avatar->GetAbilitiesCount(); j++)
 			{
 				if (mpCombatSkills[i] == avatar->GetAbility(j))
 				{
 					button->AddWinProc(new ButtonWinProc(j));
+
+					//creatureAbilityRolloverValueDescription
+					
+					Math::Vector2 minLevel;
+					App::Property::GetVector2(mpCombatSkills[i]->mpPropList.get(), 0x04052A86, minLevel);
+	
+					string16 tooltip;
+					if (minLevel.x != 0)
+					{
+						tooltip.sprintf(u"%ls - Level %i", mpCombatSkills[i]->nName.GetText(), int(minLevel.x));
+					}
+					else
+					{
+						tooltip = mpCombatSkills[i]->nName.GetText();
+					}
+					button->AddWinProc(UTFWin::CreateTooltip(tooltip.c_str()));
 					break;
 				}
 			}
