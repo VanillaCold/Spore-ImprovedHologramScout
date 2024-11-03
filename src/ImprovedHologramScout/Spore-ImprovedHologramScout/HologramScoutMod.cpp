@@ -218,8 +218,8 @@ void HologramScoutMod::GetPlayerInput(cCreatureBasePtr avatar)
 	uint32_t num3 = 0x10000003;
 	uint32_t num4 = 0x10000004;
 
-	map<byte, cCreatureAbilityPtr>& abilities = mpScanAbilities;
-	if (mbAbilityMode)
+	map<byte, cCreatureAbilityPtr> abilities = mpScanAbilities;
+	if (mbAbilityMode == 1)
 	{
 		abilities = mpCombatSkills;
 	}

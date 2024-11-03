@@ -22,7 +22,7 @@ int OverrideCreatureDamageDetour::DETOUR(float damage, uint32_t attackerPolitica
 				//Get the current ability index being used,
 				uint32_t attackIndex = creature->mCurrentAttackIdx;
 				//and get the ability from that.
-				auto ability = creature->GetAbility(attackIndex);
+				cCreatureAbilityPtr ability = creature->GetAbility(attackIndex);
 				//If it's a valid ability,
 				if (ability)
 				{
@@ -46,6 +46,7 @@ int OverrideCreatureDamageDetour::DETOUR(float damage, uint32_t attackerPolitica
 
 			if (attackerPoliticalID == GameNounManager.GetAvatar()->mPoliticalID)
 			{
+				SporeDebugPrint("0x%x", GameNounManager.GetAvatar()->mPoliticalID);
 				crt = GameNounManager.GetAvatar();
 			}
 
@@ -63,11 +64,7 @@ int OverrideCreatureDamageDetour::DETOUR(float damage, uint32_t attackerPolitica
 				auto ability = HologramCombatManager::Get()->GetLastAbilityUsed(crt);
 				if (ability)
 				{
-					if (ability->mRangeMin > 0 || (ability->mDamage == 0 && ability->mRangedDamage != 0))
-					{
-						damage = ability->mRangedDamage;
-					}
-					else damage = ability->mDamage;
+					damage = ability->mDamage;
 				}
 			}
 			else
@@ -89,8 +86,14 @@ void PlayAbilityDetour::DETOUR(int abilityIndex, Anim::AnimIndex* dstAnimIndex)
 		auto ability = this->GetAbility(abilityIndex);
 		if (ability)
 		{
+			if (ability->mType == 29)
+			{
+				delete data;
+				return original_function(this, abilityIndex, dstAnimIndex);
+			}
+
 			data->mAbilityKey = ability->mpPropList->GetResourceKey();
-			data->mpAbility = ability;
+			//data->mpAbility = ability;
 			data->mpCreatureTarget = this->mpCombatantTarget;
 			data->mpSourceCreature = this;
 			MessageManager.MessageSend(id("SpaceGameAttackused"), data);

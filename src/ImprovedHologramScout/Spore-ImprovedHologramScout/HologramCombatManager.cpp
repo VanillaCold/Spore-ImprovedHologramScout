@@ -9,7 +9,7 @@ HologramCombatManager::HologramCombatManager()
 	MessageManager.AddListener(this, Simulator::SimulatorMessages::kMsgSwitchGameMode);
 	MessageManager.AddListener(this, id("SpaceGameAttackUsed"));
 
-	mpLastUsedAbilities = hash_map<uint32_t, Simulator::cCreatureAbility*>();
+	mpLastUsedAbilities = hash_map<uint32_t, PropertyListPtr>();
 	mpLastCreatureToAttack = nullptr;
 }
 
@@ -23,13 +23,15 @@ HologramCombatManager* HologramCombatManager::Get()
 	return sInstance;
 }
 
-Simulator::cCreatureAbility* HologramCombatManager::GetLastAbilityUsed(cCreatureBasePtr crt)
+cCreatureAbilityPtr HologramCombatManager::GetLastAbilityUsed(cCreatureBasePtr crt)
 {
 	auto index = crt->mID;
 	auto node = mpLastUsedAbilities.find(index);
 	if (node != mpLastUsedAbilities.end())
 	{
-		return node->second;
+		cCreatureAbilityPtr newAbility = new Simulator::cCreatureAbility();
+		newAbility->Parse(newAbility.get(), node->second.get());
+		return newAbility;
 	}
 	return nullptr;
 }
@@ -60,7 +62,15 @@ bool HologramCombatManager::HandleMessage(uint32_t messageID, void* message)
 		case id("SpaceGameAttackused"):
 		{
 			auto castMessage = (AbilityUsedData*)(message);
-			mpLastUsedAbilities.emplace(castMessage->mpSourceCreature->mID, castMessage->mpAbility);
+			PropertyListPtr propList;
+			PropManager.GetPropertyList(castMessage->mAbilityKey.instanceID, castMessage->mAbilityKey.groupID, propList);
+
+			if (mpLastUsedAbilities.find(castMessage->mpSourceCreature->mID) != mpLastUsedAbilities.end())
+			{
+				mpLastUsedAbilities.erase(castMessage->mpSourceCreature->mID);
+			}
+
+			mpLastUsedAbilities.emplace(castMessage->mpSourceCreature->mID, propList);
 			mpLastCreatureToAttack = castMessage->mpSourceCreature;
 		}
 	}

@@ -18,7 +18,7 @@ class HologramCombatManager
 {
 protected:
 	static HologramCombatManager* sInstance;
-	hash_map<uint32_t, Simulator::cCreatureAbility*> mpLastUsedAbilities;
+	hash_map<uint32_t, PropertyListPtr> mpLastUsedAbilities;
 public:
 	static const uint32_t TYPE = id("HologramCombatManager");
 
@@ -30,7 +30,7 @@ public:
 
 	static HologramCombatManager* Get();
 
-	Simulator::cCreatureAbility* GetLastAbilityUsed(cCreatureBasePtr);
+	cCreatureAbilityPtr GetLastAbilityUsed(cCreatureBasePtr);
 	hash_map<Simulator::cCreatureBase*, float> mpMaxHealthPoints;
 	cCreatureBasePtr mpLastCreatureToAttack;
 	
