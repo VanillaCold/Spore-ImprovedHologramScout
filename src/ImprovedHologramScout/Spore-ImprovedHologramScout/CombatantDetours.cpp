@@ -63,7 +63,11 @@ int OverrideCreatureDamageDetour::DETOUR(float damage, uint32_t attackerPolitica
 				auto ability = HologramCombatManager::Get()->GetLastAbilityUsed(crt);
 				if (ability)
 				{
-					damage = ability->mDamage;
+					if (ability->mRangeMin > 0 || (ability->mDamage == 0 && ability->mRangedDamage != 0))
+					{
+						damage = ability->mRangedDamage;
+					}
+					else damage = ability->mDamage;
 				}
 			}
 			else
