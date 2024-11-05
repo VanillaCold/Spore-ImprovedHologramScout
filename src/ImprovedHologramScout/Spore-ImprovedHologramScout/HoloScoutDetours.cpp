@@ -36,6 +36,7 @@ bool Chocice75_ImprovedHologramScout_OnUseDetour::DETOUR(cSpaceToolData* pTool)
 		HologramScoutMod::Get()->InitialiseAbilities(isSpecial);
 		HologramScoutMod::Get()->OpenUI(isSpecial);
 		avatar->SetPoliticalID(Simulator::GetPlayerEmpire()->mPoliticalID);
+		HologramScoutMod::Get()->mMaxPlayerHealth = avatar->mMaxHealthPoints;
 
 		if (result && avatar && isSpecial)
 		{
@@ -46,7 +47,6 @@ bool Chocice75_ImprovedHologramScout_OnUseDetour::DETOUR(cSpaceToolData* pTool)
 
 			animal->SetCurrentBrainLevel(5);
 			avatar->mMaxHealthPoints = max(avatar->mMaxHealthPoints, max(animal2->mHealthPoints, animal2->mMaxHealthPoints));
-			HologramScoutMod::Get()->mMaxPlayerHealth = avatar->mMaxHealthPoints;
 			GameNounManager.SetAvatar(avatar.get());
 			animal->SetScale(0.00000000001);
 

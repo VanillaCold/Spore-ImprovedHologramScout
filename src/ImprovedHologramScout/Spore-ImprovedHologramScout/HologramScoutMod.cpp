@@ -77,6 +77,11 @@ void HologramScoutMod::Update()
 	deltaTimer.Stop();
 	if (Simulator::IsSpaceGame() && GameNounManager.GetAvatar())
 	{
+		if (!isSpecial)
+		{
+			mbAbilityMode = 0;
+		}
+
 		wasActive = 1;
 		
 		
