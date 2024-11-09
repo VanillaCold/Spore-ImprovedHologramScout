@@ -91,7 +91,7 @@ member_detour(TestDetour, Simulator::cGameData, void(int, int, int))
 {
 	void detoured(int param1, int param2, int param3)
 	{
-		if (object_cast<Simulator::cBuildingScenario>(this) != nullptr)
+		if (object_cast<Simulator::cInteractiveOrnament>(this) != nullptr)
 		{
 			workaround = true;
 		}
