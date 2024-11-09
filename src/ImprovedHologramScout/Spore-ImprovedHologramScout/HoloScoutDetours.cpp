@@ -61,7 +61,7 @@ bool Chocice75_ImprovedHologramScout_OnUseDetour::DETOUR(cSpaceToolData* pTool)
 
 			if (avatar->mGeneralFlags |= 0x200)
 			{
-				//avatar->mGeneralFlags = 0x20;
+				avatar->mGeneralFlags = 0x20;
 			}
 			//avatar->mFlags = 0x220;
 			avatar->mbIsGhost = 0;

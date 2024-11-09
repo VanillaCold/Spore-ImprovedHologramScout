@@ -87,16 +87,15 @@ member_detour(RolloverUIDetour, UTFWin::UILayout, bool(ResourceKey&, bool, uint3
 	}
 };
 
-member_detour(TestDetour, Simulator::cGameData, void(int, int, int))
+//FUN_00c3fde0(ResourceKey *param_1,size_t param_2,Property *param_3)
+member_detour(TestDetour, Simulator::cGameData, int(ResourceKey*, size_t, App::Property*))
 {
-	void detoured(int param1, int param2, int param3)
+	int detoured(ResourceKey* param1, size_t param2, App::Property* param3)
 	{
-		if (object_cast<Simulator::cInteractiveOrnament>(this) != nullptr)
-		{
-			workaround = true;
-		}
-			original_function(this, param1, param2, param3);
-			workaround = false;
+		workaround = true;
+		int a = original_function(this, param1, param2, param3);
+		workaround = false;
+		return a;
 	}
 };
 
@@ -142,7 +141,7 @@ void AttachDetours()
 	// For example: cViewer_SetRenderType_detour::attach(GetAddress(cViewer, SetRenderType));
 	GameModeOverride::attach(GetAddress(App::cGameModeManager, GetActiveMode));
 	GameModeOverrideTwo::attach(GetAddress(App::cGameModeManager, GetActiveModeID));
-	TestDetour::attach(GetAddress(Simulator::cGameData, SetDefinitionID));//Address(0x00b550f0));
+	TestDetour::attach(Address(0x00c3fde0));//Address(0x00b550f0));
 	TestDetour2::attach(GetAddress(Simulator::cCreatureAnimal, Update));
 }
 

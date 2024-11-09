@@ -15,6 +15,30 @@ SpawnAvatarCheat::~SpawnAvatarCheat()
 
 void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 {
+	if (line.HasFlag("d"))
+	{
+		for (auto test : Simulator::GetData<Simulator::cInteractiveOrnament>())
+		{
+			//FUN_00c3fde0
+			ResourceKey thingy = ResourceKey(id("CPE_DefaultCollisions"), TypeIDs::prop, GroupIDs::NounDefinitions);
+
+			struct DefinitionStruct //We define a struct here, as the actual one isn't in the SDK yet.
+			{
+				uint32_t nounID;
+				uint32_t definitionID;
+				const Vector3& position = Vector3(0, 0, 0);
+				PropertyListPtr propList;
+			}definition;
+
+			definition.definitionID = thingy.instanceID;
+			definition.nounID = Simulator::GameNounIDs::kInteractiveOrnament;
+
+			PropManager.GetPropertyList(thingy.instanceID, thingy.groupID, definition.propList);
+
+			CALL(Address(0x00c3fde0), int, Args(Simulator::cGameData*, int, size_t, App::Property*), Args(object_cast<Simulator::cGameData>(test), (int)&definition, 0, nullptr));
+		}
+	}
+
 	if (line.HasFlag("c"))
 	{
 		float a = 9999.0;
