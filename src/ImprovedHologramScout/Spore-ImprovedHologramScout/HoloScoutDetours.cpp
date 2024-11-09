@@ -61,14 +61,13 @@ bool Chocice75_ImprovedHologramScout_OnUseDetour::DETOUR(cSpaceToolData* pTool)
 
 			if (avatar->mGeneralFlags |= 0x200)
 			{
-				avatar->mGeneralFlags -= 0x200;
+				//avatar->mGeneralFlags = 0x20;
 			}
 			//avatar->mFlags = 0x220;
 			avatar->mbIsGhost = 0;
-			avatar->mbIsTangible = 0;
-			avatar->mbKeepPinnedToPlanet = 0;
+			avatar->mbIsTangible = 1;
+			avatar->mbKeepPinnedToPlanet = 1;
 			avatar->mbEnabled = 1;
-			avatar->mCurrentLoudness = 0;
 			avatar->mbFixed = 0;
 			avatar->mbSupported = false;
 		}
