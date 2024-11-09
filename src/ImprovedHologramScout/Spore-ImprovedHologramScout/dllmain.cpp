@@ -88,9 +88,9 @@ member_detour(RolloverUIDetour, UTFWin::UILayout, bool(ResourceKey&, bool, uint3
 };
 
 //FUN_00c3fde0(ResourceKey *param_1,size_t param_2,Property *param_3)
-member_detour(TestDetour, Simulator::cGameData, int(ResourceKey*, size_t, App::Property*))
+member_detour(TestDetour, Simulator::cGameData, int(int, int, int))
 {
-	int detoured(ResourceKey* param1, size_t param2, App::Property* param3)
+	int detoured(int param1, int param2, int param3)
 	{
 		workaround = true;
 		int a = original_function(this, param1, param2, param3);

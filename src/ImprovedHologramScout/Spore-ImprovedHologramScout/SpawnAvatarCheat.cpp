@@ -20,7 +20,8 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 		for (auto test : Simulator::GetData<Simulator::cInteractiveOrnament>())
 		{
 			//FUN_00c3fde0
-			ResourceKey thingy = ResourceKey(id("CPE_DefaultCollisions"), TypeIDs::prop, GroupIDs::NounDefinitions);
+			auto key = test->GetModelKey();
+			ResourceKey thingy = ResourceKey(id("CPE_DefaultCollisions"), TypeIDs::prop, 0x02E9C426);
 
 			struct DefinitionStruct //We define a struct here, as the actual one isn't in the SDK yet.
 			{
@@ -36,7 +37,13 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 			PropManager.GetPropertyList(thingy.instanceID, thingy.groupID, definition.propList);
 
 			CALL(Address(0x00c3fde0), int, Args(Simulator::cGameData*, int, size_t, App::Property*), Args(object_cast<Simulator::cGameData>(test), (int)&definition, 0, nullptr));
+
+			test->SetScale(test->mScale);
+			test->GetModel()->mCollisionMode = Graphics::CollisionMode::MeshTriangle;
+			test->mbModelChanged = true;
+			test->SetModelKey(key);
 		}
+		return;
 	}
 
 	if (line.HasFlag("c"))
