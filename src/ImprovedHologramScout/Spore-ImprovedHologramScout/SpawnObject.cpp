@@ -41,9 +41,9 @@ void SpawnObject::ParseLine(const ArgScript::Line& line)
 
 	PropManager.GetPropertyList(thingy.instanceID, thingy.groupID, definition.propList);
 
-	test->SetDefinitionID((int)&definition,0,0);
+	//test->SetDefinitionID((int)&definition,0,0);
 
-	//CALL(Address(0x00c3fde0), int, Args(Simulator::cGameData*, int, size_t, App::Property*), Args(object_cast<Simulator::cGameData>(test), (int)&definition, 0, nullptr));
+	CALL(Address(0x00c3fde0), int, Args(Simulator::cGameData*, int, size_t, App::Property*), Args(object_cast<Simulator::cGameData>(test), (int)&definition, 0, nullptr));
 
 	test->SetScale(test->mScale);
 	test->mbFixed = true;
