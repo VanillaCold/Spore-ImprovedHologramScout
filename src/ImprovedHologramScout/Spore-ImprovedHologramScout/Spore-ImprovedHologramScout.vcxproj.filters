@@ -20,6 +20,9 @@
     <Filter Include="Spore-ImprovedHologramScout\Detours">
       <UniqueIdentifier>{993d24c0-cccc-494d-913d-4dc17499678e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Spore-ImprovedHologramScout\Cheats">
+      <UniqueIdentifier>{46153ad1-2fae-4d31-8d9d-d6dd6dac5b75}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -27,9 +30,6 @@
     </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Internal</Filter>
-    </ClInclude>
-    <ClInclude Include="SpawnAvatarCheat.h">
-      <Filter>Spore-ImprovedHologramScout</Filter>
     </ClInclude>
     <ClInclude Include="ButtonWinProc.h">
       <Filter>Spore-ImprovedHologramScout\WinProcs</Filter>
@@ -46,6 +46,12 @@
     <ClInclude Include="Detours.h">
       <Filter>Spore-ImprovedHologramScout\Detours</Filter>
     </ClInclude>
+    <ClInclude Include="SpawnAvatarCheat.h">
+      <Filter>Spore-ImprovedHologramScout\Cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawnObject.h">
+      <Filter>Spore-ImprovedHologramScout\Cheats</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -53,9 +59,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Internal</Filter>
-    </ClCompile>
-    <ClCompile Include="SpawnAvatarCheat.cpp">
-      <Filter>Spore-ImprovedHologramScout</Filter>
     </ClCompile>
     <ClCompile Include="ButtonWinProc.cpp">
       <Filter>Spore-ImprovedHologramScout\WinProcs</Filter>
@@ -77,6 +80,12 @@
     </ClCompile>
     <ClCompile Include="CombatantDetours.cpp">
       <Filter>Spore-ImprovedHologramScout\Detours</Filter>
+    </ClCompile>
+    <ClCompile Include="SpawnAvatarCheat.cpp">
+      <Filter>Spore-ImprovedHologramScout\Cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="SpawnObject.cpp">
+      <Filter>Spore-ImprovedHologramScout\Cheats</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

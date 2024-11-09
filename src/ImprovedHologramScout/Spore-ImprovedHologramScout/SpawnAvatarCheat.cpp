@@ -17,6 +17,7 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 {
 	if (line.HasFlag("d"))
 	{
+
 		for (auto test : Simulator::GetData<Simulator::cInteractiveOrnament>())
 		{
 			//FUN_00c3fde0
@@ -27,10 +28,11 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 			{
 				uint32_t nounID;
 				uint32_t definitionID;
-				const Vector3& position = Vector3(0, 0, 0);
+				Vector3& position = Vector3(0, 0, 0);
 				PropertyListPtr propList;
 			}definition;
 
+			definition.position = test->mPosition;
 			definition.definitionID = thingy.instanceID;
 			definition.nounID = Simulator::GameNounIDs::kInteractiveOrnament;
 
@@ -39,9 +41,9 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 			CALL(Address(0x00c3fde0), int, Args(Simulator::cGameData*, int, size_t, App::Property*), Args(object_cast<Simulator::cGameData>(test), (int)&definition, 0, nullptr));
 
 			test->SetScale(test->mScale);
-			test->GetModel()->mCollisionMode = Graphics::CollisionMode::MeshTriangle;
-			test->mbModelChanged = true;
 			test->SetModelKey(key);
+			test->mbModelChanged = true;
+			test->GetModel()->mCollisionMode = Graphics::CollisionMode::MeshTriangle;
 		}
 		return;
 	}

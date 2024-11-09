@@ -1,0 +1,15 @@
+float AngularDamping 0.1
+uint32 CollisionGroup 11
+float Density 2
+float Friction 1
+int32 TuningType 3
+uint32 definition_ResourceType hash(kInteractiveOrnament~)
+float LinearDamping 0.1
+int32 MotionType 7
+uint32 materialType 4
+float restitution 0.1
+int32 shapeType 6
+int32 shapeType_Gameplay 6
+bool 0x3300820B true
+bool useGameplayPhantom false
+int32 0x87F3291F 1

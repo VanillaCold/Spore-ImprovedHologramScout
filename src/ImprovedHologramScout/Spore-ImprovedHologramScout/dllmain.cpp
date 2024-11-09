@@ -10,6 +10,8 @@
 #include "HologramCombatManager.h"
 #include <SourceCode/DLL/Application.h>
 
+#include "SpawnObject.h"
+
 #include <Spore/App/cGameModeManager.h>
 #include <Spore/App/GameSpace.h>
 
@@ -27,7 +29,7 @@ void Initialize()
 	//  - Add new space tools
 	//  - Change materials
 	CheatManager.AddCheat("SpawnAvatar", new SpawnAvatarCheat());
-	(App::cGameModeManager*)(App::IGameModeManager::Get());
+	CheatManager.AddCheat("SpawnObject", new SpawnObject());
 	App::AddUpdateFunction(new HologramScoutMod());
 
 	//Simulator::cGameData::SetDefinitionID();
@@ -143,6 +145,7 @@ void AttachDetours()
 	GameModeOverrideTwo::attach(GetAddress(App::cGameModeManager, GetActiveModeID));
 	TestDetour::attach(Address(0x00c3fde0));//Address(0x00b550f0));
 	TestDetour2::attach(GetAddress(Simulator::cCreatureAnimal, Update));
+	TestDetour2::attach(GetAddress(Simulator::cCreatureAnimal, AvatarTickAI));
 }
 
 
