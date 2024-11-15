@@ -1,5 +1,5 @@
 float AngularDamping 0.1
-uint32 CollisionGroup 11
+uint32 CollisionGroup 3
 float Density 2
 float Friction 1
 int32 TuningType 3
@@ -11,5 +11,5 @@ float restitution 0.1
 int32 shapeType 6
 int32 shapeType_Gameplay 6
 bool 0x3300820B true
-bool useGameplayPhantom false
-int32 0x87F3291F 1
+bool useGameplayPhantom true
+int32 0x87F3291F 0

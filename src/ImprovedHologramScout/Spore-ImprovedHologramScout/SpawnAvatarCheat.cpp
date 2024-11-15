@@ -95,8 +95,11 @@ void SpawnAvatarCheat::ParseLine(const ArgScript::Line& line)
 	//avatar->mVelocity += 5* avatar->mPosition.Normalized();
 	if (line.HasFlag("flags"))
 	{
-		avatar->mpAnimatedCreature->mpModel->mCollisionMode = Graphics::CollisionMode::MeshTriangle;
-		avatar->mpAnimatedCreature->mpModel->AddGroup(3);
+		//avatar->mpAnimatedCreature->mpModel->mCollisionMode = Graphics::CollisionMode::MeshTriangle;
+		//avatar->mpAnimatedCreature->mpModel->AddGroup(3);
+
+		auto a = avatar->mPlanetCorrection;
+		SporeDebugPrint("%x", a);
 
 		//char grp2Flags[32]{ " " };
 		//auto thing2 = _itoa_s(f2, grp2Flags, 2);

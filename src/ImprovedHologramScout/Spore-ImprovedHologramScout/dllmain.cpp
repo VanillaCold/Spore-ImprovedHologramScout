@@ -94,7 +94,10 @@ member_detour(TestDetour, Simulator::cGameData, int(int, int, int))
 {
 	int detoured(int param1, int param2, int param3)
 	{
-		workaround = true;
+		if (Simulator::IsSpaceGame())
+		{
+			workaround = true;
+		}
 		int a = original_function(this, param1, param2, param3);
 		workaround = false;
 		return a;
@@ -105,7 +108,7 @@ virtual_detour(TestDetour2, Simulator::cCreatureAnimal, Simulator::cCreatureBase
 {
 	void detoured(int deltaTime)
 	{
-		if (GameNounManager.GetAvatar() == this)
+		if (GameNounManager.GetAvatar() == this && Simulator::IsSpaceGame())
 		{
 			workaround = true;
 		}
@@ -138,14 +141,20 @@ void AttachDetours()
 	PlayAbilityDetour::attach(GetAddress(Simulator::cCreatureBase, PlayAbility));
 
 	//RolloverDetour::attach(GetAddress(UI::SimulatorRollover, ShowRollover));
+	
 	RolloverUIDetour::attach(GetAddress(UTFWin::UILayout, Load));
+	
 	// Call the attach() method on any detours you want to add
 	// For example: cViewer_SetRenderType_detour::attach(GetAddress(cViewer, SetRenderType));
-	GameModeOverride::attach(GetAddress(App::cGameModeManager, GetActiveMode));
-	GameModeOverrideTwo::attach(GetAddress(App::cGameModeManager, GetActiveModeID));
-	TestDetour::attach(Address(0x00c3fde0));//Address(0x00b550f0));
-	TestDetour2::attach(GetAddress(Simulator::cCreatureAnimal, Update));
-	TestDetour2::attach(GetAddress(Simulator::cCreatureAnimal, AvatarTickAI));
+	
+	
+	//GameModeOverride::attach(GetAddress(App::cGameModeManager, GetActiveMode));
+	//GameModeOverrideTwo::attach(GetAddress(App::cGameModeManager, GetActiveModeID));
+	//TestDetour::attach(Address(0x00c3fde0));//Address(0x00b550f0));
+	//TestDetour2::attach(GetAddress(Simulator::cCreatureAnimal, Update));
+	
+	
+	//TestDetour2::attach(GetAddress(Simulator::cCreatureAnimal, AvatarTickAI));
 }
 
 
