@@ -141,19 +141,13 @@ void AttachDetours()
 	PlayAbilityDetour::attach(GetAddress(Simulator::cCreatureBase, PlayAbility));
 
 	//RolloverDetour::attach(GetAddress(UI::SimulatorRollover, ShowRollover));
-	
 	RolloverUIDetour::attach(GetAddress(UTFWin::UILayout, Load));
-	
 	// Call the attach() method on any detours you want to add
 	// For example: cViewer_SetRenderType_detour::attach(GetAddress(cViewer, SetRenderType));
-	
-	
-	//GameModeOverride::attach(GetAddress(App::cGameModeManager, GetActiveMode));
-	//GameModeOverrideTwo::attach(GetAddress(App::cGameModeManager, GetActiveModeID));
-	//TestDetour::attach(Address(0x00c3fde0));//Address(0x00b550f0));
-	//TestDetour2::attach(GetAddress(Simulator::cCreatureAnimal, Update));
-	
-	
+	GameModeOverride::attach(GetAddress(App::cGameModeManager, GetActiveMode));
+	GameModeOverrideTwo::attach(GetAddress(App::cGameModeManager, GetActiveModeID));
+	TestDetour::attach(Address(0x00c3fde0));//Address(0x00b550f0));
+	TestDetour2::attach(GetAddress(Simulator::cCreatureAnimal, Update));
 	//TestDetour2::attach(GetAddress(Simulator::cCreatureAnimal, AvatarTickAI));
 }
 
