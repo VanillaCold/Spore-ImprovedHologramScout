@@ -9,7 +9,6 @@ int32 MotionType 7
 uint32 materialType 4
 float restitution 0.1
 int32 shapeType 6
-int32 shapeType_Gameplay 6
 bool 0x3300820B true
-bool useGameplayPhantom true
 int32 0x87F3291F 0
+int32 subtype hash(HoloScout_DefaultCollisions)

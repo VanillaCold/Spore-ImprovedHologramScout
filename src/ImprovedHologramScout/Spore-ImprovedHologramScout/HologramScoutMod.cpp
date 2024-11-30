@@ -171,9 +171,9 @@ void HologramScoutMod::Update()
 			
 
 			//avatar->mFlags = 0x220;
-			avatar->mbIsGhost = 0;
-			avatar->mbIsTangible = 1;
-			avatar->mbKeepPinnedToPlanet = 1;
+			//avatar->mbIsGhost = 0;
+			//avatar->mbIsTangible = 1;
+			//avatar->mbKeepPinnedToPlanet = 1;
 			//object_cast<Simulator::cCombatant>(avatar)->field_80 = 0;
 
 
