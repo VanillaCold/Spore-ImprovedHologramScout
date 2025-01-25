@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "HologramScoutMod.h"
+#include "HologramScoutMod_Old.h"
 #include <Spore/Simulator/cCreatureGameData.h>
 #include "HologramCombatManager.h"
 #include <Spore/UI/SimulatorRollovers.h>

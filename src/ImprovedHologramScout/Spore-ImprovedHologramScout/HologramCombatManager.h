@@ -33,6 +33,16 @@ public:
 	cCreatureAbilityPtr GetLastAbilityUsed(cCreatureBasePtr);
 	hash_map<Simulator::cCreatureBase*, float> mpMaxHealthPoints;
 	cCreatureBasePtr mpLastCreatureToAttack;
+
+
+	cCombatantPtr mpHoveredCombatant;
+	cCombatantPtr mpSelectedCombatant;
+
+	Simulator::cCreatureAbility* delayedAbility;
+
+	bool mbAbilityMode;
+	map<byte, cCreatureAbilityPtr> mpScanAbilities;
+	map<byte, cCreatureAbilityPtr> mpCombatSkills;
 	
 	// This is the function you have to implement, called when a message you registered to is sent.
 	bool HandleMessage(uint32_t messageID, void* message) override;

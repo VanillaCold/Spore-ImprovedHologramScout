@@ -40,7 +40,7 @@
     <ClInclude Include="HologramCombatManager.h">
       <Filter>Spore-ImprovedHologramScout\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="HologramScoutMod.h">
+    <ClInclude Include="HologramScoutMod_Old.h">
       <Filter>Spore-ImprovedHologramScout\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Detours.h">
@@ -51,6 +51,12 @@
     </ClInclude>
     <ClInclude Include="SpawnObject.h">
       <Filter>Spore-ImprovedHologramScout\Cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="HologramScoutManager.h">
+      <Filter>Spore-ImprovedHologramScout\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="HologramUIManager.h">
+      <Filter>Spore-ImprovedHologramScout\Managers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -69,7 +75,7 @@
     <ClCompile Include="HologramCombatManager.cpp">
       <Filter>Spore-ImprovedHologramScout\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="HologramScoutMod.cpp">
+    <ClCompile Include="HologramScoutMod_Old.cpp">
       <Filter>Spore-ImprovedHologramScout\Managers</Filter>
     </ClCompile>
     <ClCompile Include="MiscDetours.cpp">
@@ -86,6 +92,12 @@
     </ClCompile>
     <ClCompile Include="SpawnObject.cpp">
       <Filter>Spore-ImprovedHologramScout\Cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="HologramScoutManager.cpp">
+      <Filter>Spore-ImprovedHologramScout\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="HologramUIManager.cpp">
+      <Filter>Spore-ImprovedHologramScout\Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
