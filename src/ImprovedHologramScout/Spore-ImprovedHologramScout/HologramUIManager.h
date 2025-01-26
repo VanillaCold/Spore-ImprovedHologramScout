@@ -20,9 +20,9 @@ public:
 	void Update() override;
 
 	void OpenUI(bool showAbilities);
-	void UpdateUI();
 	void CloseUI();
 
+	void SelectCombatantUI(cCombatantPtr);
 	void DeselectUI();
 	static HologramUIManager* Get();
 

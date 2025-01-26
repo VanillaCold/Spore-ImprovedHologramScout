@@ -1,7 +1,7 @@
 #pragma once
 #include "stdafx.h"
 #include <Spore/BasicIncludes.h>
-#include "HologramScoutMod.h"
+#include "HologramCombatManager.h"
 #include <Spore\Simulator\cGetOutOfUFOToolStrategy.h>
 using namespace Simulator;
 

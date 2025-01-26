@@ -12,6 +12,7 @@
 class HologramScoutManager
 	: public Simulator::cStrategy
 {
+	static HologramScoutManager* sInstance;
 public:
 	static const uint32_t TYPE = id("Spore_ImprovedHologramScout::HologramScoutManager");
 	static const uint32_t NOUN_ID = TYPE;
@@ -35,14 +36,20 @@ public:
 	Simulator::cCombatant* GetHoveredCombatant();
 	void GetPlayerInput();
 
+	static HologramScoutManager* Get();
+
+	bool mbHasBeamedDown;
+	bool mbWasActive;
+	float mMaxPlayerHealth;
+
 
 private:
 	//
 	// You can add members here
 	//
-	bool mbHasBeamedDown;
-	bool mbWasActive;
+	
+	bool mbPressedTab;
+	bool mbPressedSpace;
 
 	
-	float mMaxPlayerHealth;
 };

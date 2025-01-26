@@ -2,6 +2,8 @@
 #include "HologramUIManager.h"
 #include "HologramCombatManager.h"
 #include "HologramScoutManager.h"
+#include "ButtonWinProc.h"
+#include "SwitchWinProc.h"
 
 HologramUIManager* HologramUIManager::sInstance;
 
@@ -113,6 +115,183 @@ void HologramUIManager::Update()
 		tHealthBar->SetArea(Math::Rectangle(0, 0, 68 * tHealth / tMaxHealth, 13));
 	}
 
+}
+
+void HologramUIManager::OpenUI(bool showAbilities)
+{
+	auto combatManager = HologramCombatManager::Get();
+	combatManager->mbAbilityMode = 0;
+
+	auto avatar = GameNounManager.GetAvatar();
+
+
+	if (mpLayout == nullptr)
+	{
+		mpLayout = new UTFWin::UILayout();
+	}
+	mpLayout->LoadByID(id("HoloScoutUI"));
+	mpLayout->SetParentWindow(WindowManager.GetMainWindow()->FindWindowByID(0x05E66E88));
+	mpLayout->SetVisible(true);
+	mpLayout->GetContainerWindow()->AddWinProc(new UTFWin::SimpleLayout());
+	mpLayout->GetContainerWindow()->SendToBack(mpLayout->GetContainerWindow());
+
+	mpLayout->FindWindowByID(id("ScanButton"))->AddWinProc(new SwitchWinProc(0));
+	mpLayout->FindWindowByID(id("CombatButton"))->AddWinProc(new SwitchWinProc(1));
+
+	if (!showAbilities)
+	{
+		mpLayout->FindWindowByID(id("CrtSpecialAbilities"))->SetVisible(false);
+		mpLayout->FindWindowByID(id("CrtBaseAbilities"))->SetVisible(false);
+		mpLayout->FindWindowByID(id("InfHealthDisplay"))->SetVisible(true);
+	}
+
+	//setup the buttons
+	//0x01012020 is the first one
+
+	for (int i = 0; i < 4; i++)
+	{
+		auto button = mpLayout->FindWindowByID(0x01012020 + i);
+		if (combatManager->mpCombatSkills.find(i) != combatManager->mpCombatSkills.end())
+		{
+			button->SetVisible(true);
+			auto window = new UTFWin::Window();
+
+			window->SetControlID(0x0);
+			button->AddWindow(window);
+
+			auto& skill = combatManager->mpCombatSkills[i];
+			ResourceKey imgKey = ResourceKey(skill->mVerbIconImageID, TypeIDs::png, id("HoloAbilityIcons"));
+
+			UTFWin::ImageDrawable* imageDrawable = new UTFWin::ImageDrawable();
+			window->SetDrawable(imageDrawable);
+			window->SetShadeColor(Math::Color(255, 255, 255, 240));
+
+			window->SetArea(Math::Rectangle(8, 8, 28, 28));
+			UTFWin::ImageDrawable::SetImageForWindow(window, imgKey);
+
+			window->SetVisible(true);
+			window->SetFlag(UTFWin::WindowFlags::kWinFlagIgnoreMouse, true);
+
+			for (byte j = 0; j < avatar->GetAbilitiesCount(); j++)
+			{
+				if (combatManager->mpCombatSkills[i] == avatar->GetAbility(j))
+				{
+					button->AddWinProc(new ButtonWinProc(j));
+
+					//creatureAbilityRolloverValueDescription
+
+					Math::Vector2 minLevel;
+					App::Property::GetVector2(combatManager->mpCombatSkills[i]->mpPropList.get(), 0x04052A86, minLevel);
+
+					string16 tooltip;
+					if (minLevel.x != 0)
+					{
+						tooltip.sprintf(u"%ls - Level %i", combatManager->mpCombatSkills[i]->nName.GetText(), int(minLevel.x));
+					}
+					else
+					{
+						tooltip = combatManager->mpCombatSkills[i]->nName.GetText();
+					}
+					button->AddWinProc(UTFWin::CreateTooltip(tooltip.c_str()));
+					break;
+				}
+			}
+
+		}
+	}
+
+	//Now just do the same for the other abilities.
+	for (int i = 0; i < 4; i++)
+	{
+		auto button = mpLayout->FindWindowByID(0x01012010 + i);
+		if (combatManager->mpScanAbilities.find(i) != combatManager->mpScanAbilities.end())
+		{
+			button->SetVisible(true);
+			auto window = new UTFWin::Window();
+
+			window->SetControlID(0x0);
+			button->AddWindow(window);
+
+			auto& skill = combatManager->mpScanAbilities[i];
+			ResourceKey imgKey = ResourceKey(skill->mVerbIconImageID, TypeIDs::png, id("HoloAbilityIcons"));
+
+			UTFWin::ImageDrawable* imageDrawable = new UTFWin::ImageDrawable();
+			window->SetDrawable(imageDrawable);
+			window->SetArea(Math::Rectangle(8, 8, 28, 28));
+			UTFWin::ImageDrawable::SetImageForWindow(window, imgKey);
+
+			window->SetVisible(true);
+			window->SetFlag(UTFWin::WindowFlags::kWinFlagIgnoreMouse, true);
+
+			for (byte j = 0; j < avatar->GetAbilitiesCount(); j++)
+			{
+				if (combatManager->mpScanAbilities[i] == avatar->GetAbility(j))
+				{
+					button->AddWinProc(new ButtonWinProc(j));
+					string16 tooltip = combatManager->mpScanAbilities[i]->nName.GetText();
+					button->AddWinProc(UTFWin::CreateTooltip(tooltip.c_str()));
+					break;
+				}
+			}
+
+		}
+	}
+
+	auto imageKey = ResourceKey(avatar->mSpeciesKey.instanceID, TypeIDs::png, avatar->mSpeciesKey.groupID);
+	auto imageDraw = new UTFWin::ImageDrawable();
+	ImagePtr image;
+	UTFWin::Image::GetImage(imageKey, image);
+	imageDraw->SetImage(image.get());
+	mpLayout->FindWindowByID(id("CreatureIcon"))->SetDrawable(imageDraw);
+
+	WindowManager.GetMainWindow()->FindWindowByID(0x065E40F0)->GetParent()->SetVisible(false);
+}
+
+
+void HologramUIManager::CloseUI()
+{
+	auto container = mpLayout->GetContainerWindow();
+
+	container->DisposeAllWindowFamilies();
+
+	mpLayout = nullptr;
+
+	WindowManager.GetMainWindow()->FindWindowByID(0x065E40F0)->GetParent()->SetVisible(true);
+}
+
+void HologramUIManager::SelectCombatantUI(cCombatantPtr combatant)
+{
+	mpLayout->FindWindowByID(id("TargetCreatureUI"))->SetVisible(true);
+
+	if (object_cast<Simulator::cSpatialObject>(combatant))
+	{
+		Simulator::cSpatialObject* spatial = object_cast<Simulator::cSpatialObject>(combatant);
+		auto key = spatial->GetModelKey();
+
+		if (object_cast<Simulator::cCreatureBase>(combatant))
+		{
+			key = object_cast<Simulator::cCreatureBase>(combatant)->mSpeciesKey;
+		}
+
+		SporeDebugPrint("(0x%x!0x%x.0x%x)", key.groupID, key.instanceID, key.typeID);
+		auto imageKey = ResourceKey(key.instanceID, TypeIDs::png, key.groupID);
+
+		auto window = mpLayout->FindWindowByID(id("TargetCreatureImage"));
+		if (ResourceManager.GetResource(imageKey, nullptr))
+		{
+			auto imageDraw = new UTFWin::ImageDrawable();
+			ImagePtr image;
+			UTFWin::Image::GetImage(imageKey, image);
+			imageDraw->SetImage(image.get());
+			window->SetDrawable(imageDraw);
+			window->Revalidate();
+			window->SetVisible(true);
+		}
+		else
+		{
+			window->SetVisible(false);
+		}
+	}
 }
 
 void HologramUIManager::DeselectUI()

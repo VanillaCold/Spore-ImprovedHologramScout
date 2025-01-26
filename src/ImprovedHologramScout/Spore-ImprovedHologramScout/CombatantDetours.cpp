@@ -2,15 +2,18 @@
 #include "Detours.h"
 #include <Spore/Simulator/SubSystem/TerraformingManager.h>
 #include "HologramCombatManager.h";
+#include "HologramScoutManager.h"
 
 int OverrideCreatureDamageDetour::DETOUR(float damage, uint32_t attackerPoliticalID, int unk, const Vector3& unkPos, cCombatant* pAttacker)
 {
 	//Get the attacker, and verify it's the space-stage.
 	if (Simulator::IsSpaceGame())
 	{
-		if (this == (Simulator::cCombatant*)GameNounManager.GetAvatar() && HologramScoutMod::Get()->wasActive)
+		auto manager = HologramScoutManager::Get();
+		auto combManager = HologramCombatManager::Get();
+		if (this == (Simulator::cCombatant*)GameNounManager.GetAvatar() && manager->mbWasActive)
 		{
-			mMaxHealthPoints = HologramScoutMod::Get()->mMaxPlayerHealth;
+			mMaxHealthPoints = manager->mMaxPlayerHealth;
 		}
 
 		if (pAttacker)
