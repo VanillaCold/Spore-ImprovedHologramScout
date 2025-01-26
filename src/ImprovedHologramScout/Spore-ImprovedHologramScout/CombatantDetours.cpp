@@ -76,8 +76,9 @@ int OverrideCreatureDamageDetour::DETOUR(float damage, uint32_t attackerPolitica
 				damage = 10;
 			}
 		}
+		SporeDebugPrint("Damage is %f, caused by political ID of 0x%x", damage, attackerPoliticalID);
+
 	}
-	SporeDebugPrint("Damage is %f, caused by political ID of 0x%x", damage, attackerPoliticalID);
 	return original_function(this, damage, attackerPoliticalID, unk, unkPos, pAttacker);
 }
 

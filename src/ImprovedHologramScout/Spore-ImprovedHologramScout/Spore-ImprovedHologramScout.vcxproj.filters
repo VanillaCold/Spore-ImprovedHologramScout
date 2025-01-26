@@ -40,9 +40,6 @@
     <ClInclude Include="HologramCombatManager.h">
       <Filter>Spore-ImprovedHologramScout\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="HologramScoutMod_Old.h">
-      <Filter>Spore-ImprovedHologramScout\Managers</Filter>
-    </ClInclude>
     <ClInclude Include="Detours.h">
       <Filter>Spore-ImprovedHologramScout\Detours</Filter>
     </ClInclude>
@@ -73,9 +70,6 @@
       <Filter>Spore-ImprovedHologramScout\WinProcs</Filter>
     </ClCompile>
     <ClCompile Include="HologramCombatManager.cpp">
-      <Filter>Spore-ImprovedHologramScout\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="HologramScoutMod_Old.cpp">
       <Filter>Spore-ImprovedHologramScout\Managers</Filter>
     </ClCompile>
     <ClCompile Include="MiscDetours.cpp">

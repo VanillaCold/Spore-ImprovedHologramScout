@@ -110,10 +110,6 @@
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="HologramScoutMod_Old.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
     <ClInclude Include="Detours.h" />
     <ClInclude Include="HologramUIManager.h">
       <SubType>
@@ -153,10 +149,6 @@
       </SubType>
     </ClCompile>
     <ClCompile Include="HologramScoutManager.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="HologramScoutMod_Old.cpp">
       <SubType>
       </SubType>
     </ClCompile>
