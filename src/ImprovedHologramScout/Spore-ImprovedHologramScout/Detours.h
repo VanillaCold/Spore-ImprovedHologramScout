@@ -3,6 +3,9 @@
 #include <Spore/BasicIncludes.h>
 #include "HologramCombatManager.h"
 #include <Spore\Simulator\cGetOutOfUFOToolStrategy.h>
+#include "HologramScoutManager.h"
+#include "HologramUIManager.h"
+
 using namespace Simulator;
 
 //Detouring the OnUse function of cGetOutOfUFOToolStrategy.

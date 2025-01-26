@@ -24,6 +24,7 @@ public:
 	const char* GetName() const override;
 	bool Write(Simulator::ISerializerStream* stream) override;
 	bool Read(Simulator::ISerializerStream* stream) override;
+	virtual bool WriteToXML(Simulator::XmlSerializer*) override;
 	void Update(int deltaTime, int deltaGameTime) override;
 
 	//

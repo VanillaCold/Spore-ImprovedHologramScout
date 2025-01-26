@@ -42,6 +42,39 @@ HologramCombatManager* HologramCombatManager::sInstance;
 
 void HologramCombatManager::InitialiseAbilities(bool isSpecial)
 {
+	auto avatar = GameNounManager.GetAvatar();
+
+	mpCombatSkills = map<byte, cCreatureAbilityPtr>();
+	mpScanAbilities = map<byte, cCreatureAbilityPtr>();
+
+	if (Simulator::IsSpaceGame() && avatar)
+	{
+		for (int i = 0; i < avatar->GetAbilitiesCount(); i++)
+		{
+			auto ability = avatar->GetAbility(i);
+			if (ability->mType == 30 || ability->mType == 62 || ability->mType == 74)
+			{
+				mpCombatSkills.emplace(0, ability);
+			}
+			if (ability->mType == 31 || ability->mType == 61 || ability->mType == 73)
+			{
+				mpCombatSkills.emplace(1, ability);
+			}
+			if (ability->mType == 33 || ability->mType == 65 || ability->mType == 75)
+			{
+				mpCombatSkills.emplace(2, ability);
+			}
+			if (ability->mType == 32 || ability->mType == 66 || ability->mType == 72)
+			{
+				mpCombatSkills.emplace(3, ability);
+			}
+
+			if (ability->mType == 29)
+			{
+				mpScanAbilities.emplace(0, ability);
+			}
+		}
+	}
 }
 
 void HologramCombatManager::SelectCombatant(cCombatantPtr combatant)

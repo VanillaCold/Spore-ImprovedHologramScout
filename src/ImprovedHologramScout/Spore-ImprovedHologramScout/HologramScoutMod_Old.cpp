@@ -180,7 +180,7 @@ void HologramScoutMod::Update()
 		}
 		else
 		{
-			object_cast<Simulator::cCombatant>(avatar)->field_80 = true;
+			object_cast<Simulator::cCombatant>(avatar)->mbInvincible = true;
 		}
 	}
 	else

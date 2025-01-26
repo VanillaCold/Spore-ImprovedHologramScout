@@ -3,7 +3,9 @@
 #include <Spore\Simulator\cGetOutOfUFOToolStrategy.h>
 #include "SpawnAvatarCheat.h"
 #include <Spore\GameModes.h>
-#include "HologramScoutMod.h"
+#include "HologramScoutManager.h"
+#include "HologramCombatManager.h"
+#include "HologramUIManager.h"
 #include <Spore\Simulator\SubSystem\TerraformingManager.h>
 #include <Spore/Editors/BakeManager.h>
 #include "Detours.h"
@@ -28,9 +30,16 @@ void Initialize()
 	//  - Add new game modes
 	//  - Add new space tools
 	//  - Change materials
+
+
 	CheatManager.AddCheat("SpawnAvatar", new SpawnAvatarCheat());
 	CheatManager.AddCheat("SpawnObject", new SpawnObject());
-	App::AddUpdateFunction(new HologramScoutMod());
+
+	App::AddUpdateFunction(new HologramUIManager());
+	
+	SimulatorSystem.AddStrategy(new HologramScoutManager(), HologramScoutManager::NOUN_ID);
+
+
 
 	//Simulator::cGameData::SetDefinitionID();
 

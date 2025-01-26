@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SwitchWinProc.h"
-#include "HologramScoutMod.h";
+#include "HologramScoutManager.h"
+#include "HologramCombatManager.h"
 
 SwitchWinProc::SwitchWinProc(bool type)
 {
@@ -47,7 +48,7 @@ bool SwitchWinProc::HandleUIMessage(IWindow* window, const Message& message)
 {
 	if (message.IsType(MessageType::kMsgButtonSelect))
 	{
-		HologramScoutMod::Get()->mbAbilityMode = buttonType;
+		HologramCombatManager::Get()->mbAbilityMode = buttonType;
 	}
 	// Return true if the message was handled, and therefore no other window procedure should receive it.
 	return false;
