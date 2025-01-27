@@ -3,7 +3,9 @@
 #include <Spore\Simulator\cGetOutOfUFOToolStrategy.h>
 #include "SpawnAvatarCheat.h"
 #include <Spore\GameModes.h>
-#include "HologramScoutMod.h"
+#include "HologramScoutManager.h"
+#include "HologramCombatManager.h"
+#include "HologramUIManager.h"
 #include <Spore\Simulator\SubSystem\TerraformingManager.h>
 #include <Spore/Editors/BakeManager.h>
 #include "Detours.h"
@@ -14,6 +16,7 @@
 
 #include <Spore/App/cGameModeManager.h>
 #include <Spore/App/GameSpace.h>
+#include <Spore/Simulator/cCreatureGameData.h>
 
 using namespace Simulator;
 
@@ -28,9 +31,16 @@ void Initialize()
 	//  - Add new game modes
 	//  - Add new space tools
 	//  - Change materials
+
+
 	CheatManager.AddCheat("SpawnAvatar", new SpawnAvatarCheat());
 	CheatManager.AddCheat("SpawnObject", new SpawnObject());
-	App::AddUpdateFunction(new HologramScoutMod());
+
+	App::AddUpdateFunction(new HologramUIManager());
+	
+	SimulatorSystem.AddStrategy(new HologramScoutManager(), HologramScoutManager::NOUN_ID);
+
+
 
 	//Simulator::cGameData::SetDefinitionID();
 
@@ -117,6 +127,19 @@ virtual_detour(TestDetour2, Simulator::cCreatureAnimal, Simulator::cCreatureBase
 	}
 };
 
+//
+static_detour(FixEvoPointsDetour, void(float))
+{
+	void detoured(float points)
+	{
+		if (Simulator::IsSpaceGame())
+		{
+			return;
+		}
+		return original_function(points);
+	}
+};
+
 /*static_detour(TestDetour, int* (int*, App::PropertyList*, float, int, int, bool))
 {
 	int* detoured(int* param1, App::PropertyList * param2, float param3, int param4, int param5, bool param6)
@@ -137,7 +160,7 @@ void AttachDetours()
 	//CreatureBaseDetour::attach(GetAddress(Simulator::cCreatureBase, WalkTo));
 
 	HologramAudioDetour::attach(GetAddress(Audio,PlayProceduralAudio));
-	OverrideCreatureDamageDetour::attach(Address(ModAPI::ChooseAddress(0x00bfc500, 0x00bfcf10)));
+	OverrideCreatureDamageDetour::attach(GetAddress(Simulator::cCreatureBase,TakeDamage));
 	PlayAbilityDetour::attach(GetAddress(Simulator::cCreatureBase, PlayAbility));
 
 	//RolloverDetour::attach(GetAddress(UI::SimulatorRollover, ShowRollover));
@@ -146,8 +169,9 @@ void AttachDetours()
 	// For example: cViewer_SetRenderType_detour::attach(GetAddress(cViewer, SetRenderType));
 	GameModeOverride::attach(GetAddress(App::cGameModeManager, GetActiveMode));
 	GameModeOverrideTwo::attach(GetAddress(App::cGameModeManager, GetActiveModeID));
-	TestDetour::attach(Address(0x00c3fde0));//Address(0x00b550f0));
+	//TestDetour::attach(Address(0x00c3fde0));//Address(0x00b550f0));
 	TestDetour2::attach(GetAddress(Simulator::cCreatureAnimal, Update));
+	FixEvoPointsDetour::attach(GetAddress(Simulator::cCreatureGameData, AddEvolutionPoints));
 	//TestDetour2::attach(GetAddress(Simulator::cCreatureAnimal, AvatarTickAI));
 }
 

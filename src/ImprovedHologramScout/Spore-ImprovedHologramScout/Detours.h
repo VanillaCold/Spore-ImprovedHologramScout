@@ -1,8 +1,11 @@
 #pragma once
 #include "stdafx.h"
 #include <Spore/BasicIncludes.h>
-#include "HologramScoutMod.h"
+#include "HologramCombatManager.h"
 #include <Spore\Simulator\cGetOutOfUFOToolStrategy.h>
+#include "HologramScoutManager.h"
+#include "HologramUIManager.h"
+
 using namespace Simulator;
 
 //Detouring the OnUse function of cGetOutOfUFOToolStrategy.

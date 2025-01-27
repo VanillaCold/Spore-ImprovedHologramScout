@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ButtonWinProc.h"
 #include "HologramCombatManager.h"
-#include "HologramScoutMod.h"
+//#include "HologramScoutMod.h"
 
 ButtonWinProc::ButtonWinProc(int attkID)
 {
@@ -55,7 +55,7 @@ bool ButtonWinProc::HandleUIMessage(IWindow* window, const Message& message)
 
 	if (message.IsType(MessageType::kMsgButtonSelect))
 	{
-		HologramScoutMod::Get()->TriggerSkill(ability);
+		HologramCombatManager::Get()->TriggerSkill(ability);
 		return true;
 	}
 
@@ -68,7 +68,7 @@ bool ButtonWinProc::HandleUIMessage(IWindow* window, const Message& message)
 		//auto thing = _itoa_s(button->GetButtonStateFlags(), flags, 2);
 		//SporeDebugPrint(flags);
 		
-		if (HologramScoutMod::Get()->CanUse(attkID))
+		if (HologramCombatManager::Get()->CanUse(attkID))
 		{
 			button->SetButtonStateFlag(4, false);
 		}

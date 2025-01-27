@@ -106,11 +106,15 @@
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="HologramScoutMod.h">
+    <ClInclude Include="HologramScoutManager.h">
       <SubType>
       </SubType>
     </ClInclude>
     <ClInclude Include="Detours.h" />
+    <ClInclude Include="HologramUIManager.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="SpawnAvatarCheat.h">
       <SubType>
       </SubType>
@@ -144,7 +148,11 @@
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="HologramScoutMod.cpp">
+    <ClCompile Include="HologramScoutManager.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="HologramUIManager.cpp">
       <SubType>
       </SubType>
     </ClCompile>

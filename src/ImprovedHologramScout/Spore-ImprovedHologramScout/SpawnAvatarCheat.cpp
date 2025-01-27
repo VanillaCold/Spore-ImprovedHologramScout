@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SpawnAvatarCheat.h"
-#include "HologramScoutMod.h"
+#include "HologramScoutManager.h"
 
 SpawnAvatarCheat::SpawnAvatarCheat()
 {

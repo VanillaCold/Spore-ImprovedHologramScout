@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Detours.h"
 #include <Spore/Simulator/SubSystem/TerraformingManager.h>
+#include "HologramScoutManager.h"
+#include "HologramUIManager.h"
 
 bool Chocice75_ImprovedHologramScout_OnUseDetour::DETOUR(cSpaceToolData* pTool)
 {
@@ -13,7 +15,11 @@ bool Chocice75_ImprovedHologramScout_OnUseDetour::DETOUR(cSpaceToolData* pTool)
 
 		auto captain = GetPlayerEmpire()->mCaptainKey;
 		auto species = GetPlayerEmpire()->GetSpeciesProfile();
-		HologramScoutMod::Get()->isSpecial = isSpecial;
+		auto manager = HologramScoutManager::Get();
+
+		auto managerUI = HologramUIManager::Get();
+
+		manager->mbHasBeamedDown = isSpecial;
 		//ModAPI::Log("%x!%x.%x", species.groupID, species.instanceID, species.typeID);
 		if (!isSpecial)
 		{
@@ -33,10 +39,12 @@ bool Chocice75_ImprovedHologramScout_OnUseDetour::DETOUR(cSpaceToolData* pTool)
 		avatar->mMaxHealthPoints = max(avatar->mHealthPoints, avatar->mMaxHealthPoints);
 		avatar->SetScale(2.0f);
 
-		HologramScoutMod::Get()->InitialiseAbilities(isSpecial);
-		HologramScoutMod::Get()->OpenUI(isSpecial);
+		
+
+		HologramCombatManager::Get()->InitialiseAbilities(isSpecial);
+		managerUI->OpenUI(isSpecial);
 		avatar->SetPoliticalID(Simulator::GetPlayerEmpire()->mPoliticalID);
-		HologramScoutMod::Get()->mMaxPlayerHealth = avatar->mMaxHealthPoints;
+		manager->mMaxPlayerHealth = avatar->mMaxHealthPoints;
 
 		if (result && avatar && isSpecial)
 		{
@@ -55,7 +63,6 @@ bool Chocice75_ImprovedHologramScout_OnUseDetour::DETOUR(cSpaceToolData* pTool)
 
 			avatar->mHealthPoints = avatar->mMaxHealthPoints;
 
-			HologramScoutMod::Get()->isSpecial = 1;
 			avatar->SetScale(0.8f);
 			avatar->GetModel()->GetModelWorld()->SetLightingWorld(Simulator::GetPlayerUFO()->GetModel()->GetModelWorld()->GetLightingWorld(0), 0, 1);
 
