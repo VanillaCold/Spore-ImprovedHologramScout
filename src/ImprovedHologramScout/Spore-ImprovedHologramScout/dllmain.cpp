@@ -16,6 +16,7 @@
 
 #include <Spore/App/cGameModeManager.h>
 #include <Spore/App/GameSpace.h>
+#include <Spore/Simulator/cCreatureGameData.h>
 
 using namespace Simulator;
 
@@ -126,6 +127,19 @@ virtual_detour(TestDetour2, Simulator::cCreatureAnimal, Simulator::cCreatureBase
 	}
 };
 
+//
+static_detour(FixEvoPointsDetour, void(float))
+{
+	void detoured(float points)
+	{
+		if (Simulator::IsSpaceGame())
+		{
+			return;
+		}
+		return original_function(points);
+	}
+};
+
 /*static_detour(TestDetour, int* (int*, App::PropertyList*, float, int, int, bool))
 {
 	int* detoured(int* param1, App::PropertyList * param2, float param3, int param4, int param5, bool param6)
@@ -157,6 +171,7 @@ void AttachDetours()
 	GameModeOverrideTwo::attach(GetAddress(App::cGameModeManager, GetActiveModeID));
 	//TestDetour::attach(Address(0x00c3fde0));//Address(0x00b550f0));
 	TestDetour2::attach(GetAddress(Simulator::cCreatureAnimal, Update));
+	FixEvoPointsDetour::attach(GetAddress(Simulator::cCreatureGameData, AddEvolutionPoints));
 	//TestDetour2::attach(GetAddress(Simulator::cCreatureAnimal, AvatarTickAI));
 }
 
