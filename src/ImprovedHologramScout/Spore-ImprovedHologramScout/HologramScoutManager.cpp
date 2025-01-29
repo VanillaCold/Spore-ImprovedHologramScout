@@ -89,7 +89,7 @@ void HologramScoutManager::Update(int deltaTime, int deltaGameTime)
 		avatar->mMaxHealthPoints = mMaxPlayerHealth;
 
 		// Select creatures.
-		combatManager->mpHoveredCombatant = GetHoveredCombatant();
+		GetHoveredCombatant();
 		GetPlayerInput();
 
 		if ((!avatar->mpCombatantTarget && combatManager->mpSelectedCombatant) || (avatar->mpCombatantTarget && avatar->mpCombatantTarget->mHealthPoints <= 0))
@@ -158,7 +158,7 @@ Simulator::cCombatant* HologramScoutManager::GetHoveredCombatant()
 	if (combatant != nullptr)
 	{
 		combatant->ToSpatialObject()->SetIsRolledOver(true);
-
+		HologramCombatManager::Get()->mpHoveredCombatant = combatant;
 		UI::SimulatorRollover::ShowRollover(hover);
 
 		return combatant;

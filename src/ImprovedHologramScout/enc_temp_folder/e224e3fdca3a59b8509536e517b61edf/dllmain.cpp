@@ -23,7 +23,6 @@
 using namespace Simulator;
 
 static bool workaround = false;
-static bool otherWorkaround = false;
 
 void Initialize()
 {
@@ -90,20 +89,21 @@ virtual_detour(GameModeOverrideTwo, App::cGameModeManager, App::IGameModeManager
 	}
 };
 
-//bool LoadByName(const char16_t* pLayoutName, uint32_t groupID = kDefaultGroup, bool = true, uint32_t = kDefaultParameter);
-
-member_detour(RolloverUIDetour, UTFWin::UILayout, bool(const char16_t*, uint32_t, bool, uint32_t))
+member_detour(RolloverUIDetour, UTFWin::UILayout, bool(ResourceKey&, bool, uint32_t))
 {
-	bool detoured(const char16_t* input, uint32_t groupID, bool unk, uint32_t param)
+	bool detoured(ResourceKey& resourceKey, bool unk, uint32_t param)
 	{
-		if (otherWorkaround)
+		auto thingy = workaround;
+		workaround = false;
+		auto a = resourceKey;
+		if (resourceKey.instanceID == 0xAB458FAA && Simulator::IsSpaceGame() || (thingy == true && resourceKey.instanceID == id("SharedHealthBar")))
 		{
-			SporeDebugPrint("%ls", input);
-			return original_function(this, u"Rollover_CreatureSPG", groupID, unk, param);
-			//return original_function(this, u"Rollover_CreatureSPG", groupID, unk, param);
-			//a.instanceID = id("Rollover_CreatureSPG");
+			//ModAPI::Log("Building a sentry");
+			a.instanceID = id("Rollover_CreatureSPG");
 		}
-		return original_function(this, input, groupID, unk, param);
+		bool didFinish = original_function(this, a, unk, param);
+		workaround = thingy;
+		return didFinish;
 	}
 };
 
@@ -177,35 +177,33 @@ static_detour(ShowRolloverDetour, UI::SimulatorRollover* (Simulator::cGameData*,
 {
 	UI::SimulatorRollover* detoured(Simulator::cGameData* gameData, UI::SimulatorRolloverID id, float unk)
 	{
-		if (object_cast<Simulator::cCreatureBase>(gameData) && Simulator::IsSpaceGame())
+		bool thingy = workaround;
+		workaround = false;
+		if (Simulator::IsSpaceGame() && object_cast<Simulator::cCreatureBase>(gameData))
 		{
-			id = UI::SimulatorRolloverID::Creature;
-			otherWorkaround = true;
 			workaround = true;
 		}
 		auto thing = original_function(gameData, id, unk);
-		workaround = false;
-		if (thing != nullptr && otherWorkaround == true)
+		if (thing != nullptr && workaround == true)
 		{
 
-			//SporeDebugPrint("aa");
+			SporeDebugPrint("aa");
 
 			auto b = object_cast<Simulator::cCreatureBase>(gameData);
-			//SporeDebugPrint("0x%x", b->mpSpeciesProfile->mSpeciesKey.instanceID);
+			SporeDebugPrint("0x%x", b->mpSpeciesProfile->mSpeciesKey.instanceID);
 			uint32_t a = CALL(Address(0x00dd5d10), uint32_t,
 				Args(Simulator::cUIEventLog*, uint32_t, uint32_t),
 				Args(Simulator::cUIEventLog::Get(), 0x6e000a7a, b->mpSpeciesProfile->mSpeciesKey.instanceID));
 
 			if (a != 0x0)
 			{
-				SporeDebugPrint("cool");
 				if (thing->mpMainWindow->FindWindowByID(0x04B47745))
 				{
 					thing->mpMainWindow->FindWindowByID(0x04B47745)->SetVisible(true);
 				}
 			}
 		}
-		otherWorkaround = false;
+		workaround = thingy;
 		return thing;
 	}
 };
@@ -223,7 +221,7 @@ void AttachDetours()
 	PlayAbilityDetour::attach(GetAddress(Simulator::cCreatureBase, PlayAbility));
 
 	//RolloverDetour::attach(GetAddress(UI::SimulatorRollover, ShowRollover));
-	RolloverUIDetour::attach(GetAddress(UTFWin::UILayout, LoadByName));
+	RolloverUIDetour::attach(GetAddress(UTFWin::UILayout, Load));
 	// Call the attach() method on any detours you want to add
 	// For example: cViewer_SetRenderType_detour::attach(GetAddress(cViewer, SetRenderType));
 	GameModeOverride::attach(GetAddress(App::cGameModeManager, GetActiveMode));
