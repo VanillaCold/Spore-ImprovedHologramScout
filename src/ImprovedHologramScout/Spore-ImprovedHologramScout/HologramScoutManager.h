@@ -43,6 +43,8 @@ public:
 	bool mbWasActive;
 	float mMaxPlayerHealth;
 
+	set<uint32_t> mCreaturesScanned;
+
 
 private:
 	//

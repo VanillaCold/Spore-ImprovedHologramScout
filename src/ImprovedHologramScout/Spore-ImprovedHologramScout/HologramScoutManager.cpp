@@ -36,6 +36,7 @@ bool HologramScoutManager::WriteToXML(Simulator::XmlSerializer* stream)
 
 Simulator::Attribute HologramScoutManager::ATTRIBUTES[] = {
 	// Add more attributes here
+	SimAttribute(HologramScoutManager, mCreaturesScanned, 1),
 	// This one must always be at the end
 	Simulator::Attribute()
 };

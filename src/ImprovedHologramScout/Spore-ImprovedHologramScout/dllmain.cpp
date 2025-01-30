@@ -165,7 +165,8 @@ static_detour(ScanMessageDetour, void(ResourceKey param1, int param2, const char
 	{
 		if (Simulator::IsSpaceGame() && GameNounManager.GetAvatar())
 		{
-			SporeDebugPrint("YOOOOOOOOOOOO");
+			HologramScoutManager::Get()->mCreaturesScanned.emplace(param1.instanceID);
+			//SporeDebugPrint("YOOOOOOOOOOOO");
 		}
 		return original_function(param1, param2, param3);
 	}
@@ -192,11 +193,12 @@ static_detour(ShowRolloverDetour, UI::SimulatorRollover* (Simulator::cGameData*,
 
 			auto b = object_cast<Simulator::cCreatureBase>(gameData);
 			//SporeDebugPrint("0x%x", b->mpSpeciesProfile->mSpeciesKey.instanceID);
-			uint32_t a = CALL(Address(0x00dd5d10), uint32_t,
+			/*uint32_t a = CALL(Address(0x00dd5d10), uint32_t,
 				Args(Simulator::cUIEventLog*, uint32_t, uint32_t),
-				Args(Simulator::cUIEventLog::Get(), 0x6e000a7a, b->mpSpeciesProfile->mSpeciesKey.instanceID));
+				Args(Simulator::cUIEventLog::Get(), 0x6e000a7a, b->mpSpeciesProfile->mSpeciesKey.instanceID));*/
+			auto a = HologramScoutManager::Get()->mCreaturesScanned.find(b->mSpeciesKey.instanceID);
 
-			if (a != 0x0)
+			if (a != HologramScoutManager::Get()->mCreaturesScanned.end())
 			{
 				SporeDebugPrint("cool");
 				if (thing->mpMainWindow->FindWindowByID(0x04B47745))
